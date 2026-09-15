@@ -180,6 +180,11 @@ Cualquier vista expuesta usará comportamiento `security_invoker` o una alternat
 - Para `measurement_type = duration`, la cantidad se almacena siempre en minutos y `unit = 'minute'`; la UI puede mostrar horas. `count` y `custom` se agregan solo dentro del mismo hábito/unidad exacta. Unidades incompatibles nunca se suman entre hábitos.
 
 Los días incumplidos son implícitos: se generan fechas esperadas y se cruzan con logs. No se crean filas vacías por cada ausencia.
+El calendario mensual reutiliza esa misma derivación: una ocurrencia con log
+que alcanza la meta es completada, una ocurrencia anterior a hoy sin completar
+es incumplida, una ocurrencia futura es programada y una fecha sin versión
+aplicable es no programada. Hoy se marca aparte visualmente, sin cambiar la
+semántica de la ocurrencia.
 
 ## Pruebas requeridas para la migración
 

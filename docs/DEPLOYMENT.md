@@ -4,11 +4,33 @@
 
 La aplicación React + Vite existe y su build local está verificado. El proyecto Supabase independiente de Kizen está enlazado y tiene aplicada la migración inicial. Aún no hay Worker ni despliegue Cloudflare configurado. El flujo previsto es desarrollo local → Git → GitHub → Cloudflare → Kizen.
 
+## Cloudflare Pages con despliegue por push
+
+Para este frontend estático, Cloudflare Pages es la opción recomendada. No requiere un Worker ni un token de GitHub:
+
+1. En Cloudflare, abrir **Workers & Pages → Create application → Pages → Connect to Git**.
+2. Autorizar GitHub y seleccionar `jelsync/Kizen`.
+3. Elegir la rama `main` para producción.
+4. Configurar:
+   - Framework preset: `Vite`
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: `/`
+   - Node version: `22`
+5. En **Settings → Environment variables → Production** agregar:
+   - `VITE_SUPABASE_URL=https://mahsnwodlzyygkoxrrov.supabase.co`
+   - `VITE_SUPABASE_ANON_KEY=<la clave pública del proyecto>`
+6. Guardar y ejecutar el primer despliegue.
+
+Después, cada `push` a `main` iniciará automáticamente un nuevo build y despliegue. Los pull requests pueden configurarse como Preview Deployments.
+
+Cuando Cloudflare asigne la URL pública, registrar esa URL en Supabase en **Authentication → URL Configuration** como `Site URL` y agregar también `https://<proyecto>.pages.dev/**` en `Redirect URLs`. No subir `.env.local` ni claves privadas al repositorio.
+
 ## Configuración prevista
 
 - Repositorio: `jelsync/Kizen`.
-- Worker: `kizen` si el nombre está disponible.
-- URL prevista: `https://kizen.jelsync.workers.dev/`.
+- Proyecto Pages: `kizen` si el nombre está disponible.
+- URL prevista: `https://kizen.pages.dev/` o el subdominio asignado por Cloudflare.
 - Build command: `npm.cmd run build` en PowerShell local; Cloudflare ejecutará `npm run build`.
 - Output: `dist`.
 

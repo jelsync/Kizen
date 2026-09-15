@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react'
+import { HabitCalendar } from './HabitCalendar'
 import { ISO_WEEKDAYS, type Habit } from './habit-types'
 import { formatCivilDate } from './habit-dates'
 import { getHabitMetrics } from './habit-metrics'
@@ -180,6 +181,8 @@ export function HabitCard({
           Históricamente: {metrics.totals.completedDays} de {metrics.totals.expectedDays}.
         </p>
       </section>
+
+      <HabitCalendar habit={habit} today={localToday} />
 
       <div className="habit-history">
         <strong>Historial reciente</strong>

@@ -66,6 +66,10 @@ Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestam
   las pausas no agregan días y el día actual pendiente no rompe la racha. La tarjeta
   muestra racha actual, mejor racha, constancia y progreso del periodo móvil de
   30 días, junto con el total histórico. No se almacenan contadores derivados.
+- Cada tarjeta muestra un calendario mensual derivado de las mismas versiones y
+  logs. Los días civiles se generan con UTC únicamente como representación
+  estable de una fecha (`YYYY-MM-DD`); la fecha de hoy se obtiene previamente
+  desde la zona IANA del perfil. No se persisten estados de calendario.
 - `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
 - `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
 - `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.

@@ -29,6 +29,10 @@
   30 días y totales históricos. Las pausas, el día actual pendiente y los cambios
   de meta respetan la semántica de fechas y versiones; no se guardan contadores
   derivados.
+- Fase 8 implementada: calendario mensual por hábito con navegación, leyenda
+  accesible y estados derivados de las versiones de programación y `habit_logs`
+  (completado, incumplido, programado, no programado y hoy). La cuadrícula usa
+  fechas civiles y no depende de la zona horaria del navegador.
 
 ## En progreso
 
@@ -37,7 +41,8 @@
 
 ## Pendiente
 
-- Tras validar las Fases 5 y 6, implementar el calendario.
+- Validar desde la interfaz el flujo completo de las Fases 5, 6, 7 y 8 con
+  una sesión real contra Supabase remoto.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 
 ## Riesgos y restricciones actuales

@@ -37,9 +37,11 @@ Rachas, constancia y estadísticas derivadas de las programaciones versionadas y
 mejor racha, constancia y progreso de los últimos 30 días, además de totales
 históricos.
 
-## Fase 8 — Calendario
+## Fase 8 — Calendario ✅
 
-Visualización de días completados, incumplidos, no programados y hoy.
+Visualización mensual de días completados, incumplidos, programados,
+no programados y hoy, derivada de las versiones de programación y
+`habit_logs` sin almacenar estados adicionales.
 
 ## Fase 9 — Recordatorios
 
