@@ -50,7 +50,7 @@ El vínculo remoto y `supabase db push` solo se ejecutan después de verificar e
 Proyecto remoto de Kizen:
 
 - Project ref: `mahsnwodlzyygkoxrrov`.
-- Migraciones remotas aplicadas: `202609150001_initial_kizen_schema.sql` y `202609150002_habit_mutation_guards.sql`.
+- Migraciones remotas aplicadas: `202609150001_initial_kizen_schema.sql`, `202609150002_habit_mutation_guards.sql`, `202609150003_fix_schedule_day_trigger.sql` y `202609150004_fix_schedule_trigger_old_reference.sql`.
 - Antes de cada aplicación remota se ejecutan `supabase db reset`, `supabase test db` y `supabase db push --dry-run`.
 
 ## Redirecciones de Supabase Auth

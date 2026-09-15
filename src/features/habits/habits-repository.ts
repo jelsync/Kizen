@@ -32,8 +32,16 @@ function readErrorMessage(error: unknown): string {
   return ''
 }
 
+function readErrorCode(error: unknown): string {
+  if (typeof error === 'object' && error !== null && 'code' in error) {
+    return String(error.code)
+  }
+  return ''
+}
+
 export function toHabitError(error: unknown): Error {
   const message = readErrorMessage(error)
+  const code = readErrorCode(error)
 
   if (message.includes('Authentication required')) {
     return new Error('Tu sesión expiró. Cierra sesión e inicia sesión nuevamente.')
@@ -62,6 +70,9 @@ export function toHabitError(error: unknown): Error {
   if (message.includes('Could not find the function')) {
     return new Error('La base de datos aún no tiene la última versión. Aplica las migraciones e inténtalo otra vez.')
   }
+  if (code === 'PGRST202') {
+    return new Error('Supabase no encontró la función de creación. Recarga la página e inténtalo otra vez.')
+  }
   if (message.includes('Today already has progress')) {
     return new Error('Este hábito ya tiene progreso hoy. Realiza este cambio mañana.')
   }
@@ -73,6 +84,10 @@ export function toHabitError(error: unknown): Error {
   }
   if (message.includes('Archived habits')) {
     return new Error('Los hábitos archivados no pueden reactivarse.')
+  }
+
+  if (import.meta.env.DEV && typeof window !== 'undefined' && message) {
+    return new Error(`Error de Supabase (${code || 'sin código'}): ${message}`)
   }
 
   return new Error('No pudimos guardar el cambio. Inténtalo nuevamente.')

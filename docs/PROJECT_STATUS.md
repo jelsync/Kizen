@@ -19,6 +19,8 @@
 - Fase 5 implementada: listado, creación, edición, pausa, reactivación, archivado y borrado permanente de hábitos con programación semanal.
 - Ciclo de vida, atomicidad y restricciones destructivas de hábitos validados localmente con 91 pruebas pgTAP; frontend cubierto por 27 pruebas automatizadas.
 - Migración de edición atómica y borrado restringido aplicada al proyecto Supabase remoto; no quedan migraciones pendientes.
+- Corrección del trigger de días de programación aplicada al proyecto Supabase remoto; la creación de hábitos ya no evalúa `OLD` durante un `INSERT`.
+- Corrección adicional aplicada para evitar referencias a `OLD.schedule_id` en triggers de otra tabla.
 
 ## En progreso
 
