@@ -50,7 +50,7 @@ El vínculo remoto y `supabase db push` solo se ejecutan después de verificar e
 Proyecto remoto de Kizen:
 
 - Project ref: `mahsnwodlzyygkoxrrov`.
-- Migración remota aplicada: `202609150001_initial_kizen_schema.sql`.
+- Migraciones remotas aplicadas: `202609150001_initial_kizen_schema.sql` y `202609150002_habit_mutation_guards.sql`.
 - Antes de cada aplicación remota se ejecutan `supabase db reset`, `supabase test db` y `supabase db push --dry-run`.
 
 ## Redirecciones de Supabase Auth
@@ -74,6 +74,8 @@ Authentication → configuración de contraseña
 - Mantener confirmación de correo habilitada.
 
 La política remota se configura por separado: la validación React mejora la experiencia, pero no sustituye la protección de Supabase Auth.
+
+Estado verificado el 2026-09-15: las URL locales, la política de contraseña y la confirmación por correo quedaron configuradas; registro, confirmación, login, logout y recuperación funcionaron correctamente contra el proyecto remoto de Kizen.
 
 Al desplegar, cambiar Site URL a la URL definitiva de Cloudflare y agregarla como redirección exacta. Mantener las URL locales solo para desarrollo. Los enlaces de confirmación y recuperación dependen de esta lista permitida.
 

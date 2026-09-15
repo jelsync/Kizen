@@ -26,12 +26,46 @@
 .brand {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.7rem;
   width: min(100%, 72rem);
   margin: 0 auto;
   font-size: 1.05rem;
   font-weight: 900;
   letter-spacing: -0.02em;
+}
+
+.brand-identity,
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.account-actions {
+  min-width: 0;
+}
+
+.account-actions > span {
+  display: none;
+  max-width: 15rem;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-actions .secondary-action {
+  min-height: 2.4rem;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.75rem;
+}
+
+.workspace-shell {
+  padding-bottom: 4rem;
 }
 
 .brand-mark {
@@ -164,5 +198,9 @@
     grid-template-columns: minmax(0, 1.2fr) minmax(22rem, 0.8fr);
     gap: 4rem;
     margin-top: 0;
+  }
+
+  .account-actions > span {
+    display: block;
   }
 }

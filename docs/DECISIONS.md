@@ -77,12 +77,12 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Fecha: 2026-09-15
 - Decisión: administrar PostgreSQL mediante migraciones de Supabase versionadas, desactivar la exposición automática de tablas y conceder privilegios explícitos. Las operaciones que deben mantener varias invariantes se realizan con RPC `SECURITY DEFINER` endurecidas.
 - Motivo: RLS filtra filas, pero no garantiza por sí sola que hábito, programación, estado y logs cambien atómicamente ni limita automáticamente los privilegios del Data API.
-- Consecuencias: el frontend no inserta directamente hábitos o logs ni modifica estados o programaciones. Las RPC obtienen el propietario desde `auth.uid()`, usan `search_path = ''`, verifican propiedad y se conceden solo a `authenticated`.
+- Consecuencias: el frontend no inserta ni actualiza directamente hábitos o logs ni modifica estados o programaciones. Las RPC obtienen el propietario desde `auth.uid()`, usan `search_path = ''`, verifican propiedad y se conceden solo a `authenticated`.
 
 ## DEC-012 — Cambios de programación efectivos en el día actual
 
 - Fecha: 2026-09-15
-- Decisión: crear, reemplazar, pausar, archivar o reactivar se aplica en la fecha local actual. Si hoy ya tiene progreso, el cambio se ejecuta al comenzar el siguiente día; no se almacenan cambios de estado futuros en el MVP.
+- Decisión: crear, reemplazar, pausar, archivar o reactivar se aplica en la fecha local actual. Si hoy ya tiene progreso, la operación se rechaza y el usuario debe repetirla al día siguiente; no se almacenan cambios de estado futuros en el MVP.
 - Motivo: evita que `habits.status` diga una cosa mientras la vigencia de la programación todavía dice otra.
 - Consecuencias: una versión creada hoy sin logs puede sustituirse o retirarse de forma atómica porque aún no tiene historia. Una versión con historia se cierra y nunca se reescribe.
 
@@ -92,3 +92,24 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Decisión: usar las APIs cliente de Supabase Auth y `onAuthStateChange` para sesión, confirmación y recuperación; no crear un almacén propio de tokens ni un backend de autenticación.
 - Motivo: Supabase ya resuelve persistencia, renovación y callbacks para el MVP, mientras RLS aplica la autorización en PostgreSQL.
 - Consecuencias: las URL de desarrollo y producción deben estar permitidas en Supabase Auth. `PASSWORD_RECOVERY` abre un formulario específico y actualiza la contraseña mediante la sesión temporal del usuario.
+
+## DEC-014 — Fecha de hábitos basada en la zona del perfil
+
+- Fecha: 2026-09-15
+- Decisión: las mutaciones de hábitos calculan el día civil con `profiles.time_zone`. Mientras no exista una pantalla de preferencias, un perfil que conserva el valor inicial `UTC` adopta una vez la zona IANA detectada por el navegador.
+- Motivo: las RPC validan “hoy” en PostgreSQL y `toISOString()` puede representar otro día cerca de medianoche. El perfil debe ser la fuente de verdad compartida para programación y calendario.
+- Consecuencias: el frontend consulta el perfil antes de cargar el workspace y usa `Intl.DateTimeFormat` con esa zona. Una futura pantalla de preferencias deberá permitir seleccionar la zona explícitamente y evitar sobrescribir decisiones del usuario.
+
+## DEC-015 — Archivado como eliminación normal
+
+- Fecha: 2026-09-15
+- Decisión: la acción normal de retirar un hábito lo archiva mediante `set_habit_status`; el borrado físico aparece solo en la vista de archivados y exige confirmación explícita.
+- Motivo: conservar el historial es el comportamiento seguro y esperado para métricas futuras, mientras el usuario mantiene una vía clara para eliminar sus datos definitivamente.
+- Consecuencias: un hábito archivado no se reactiva. El borrado permanente usa el `DELETE` protegido por RLS y aplica las cascadas definidas en PostgreSQL.
+
+## DEC-016 — Edición completa de hábitos en una transacción
+
+- Fecha: 2026-09-15
+- Decisión: editar detalles y, opcionalmente, reemplazar la programación se realiza mediante `update_habit_with_schedule`. Se revoca la actualización directa de columnas de `habits` al cliente.
+- Motivo: dos solicitudes independientes podían confirmar la programación y fallar después al guardar los detalles, dejando un éxito parcial presentado como error.
+- Consecuencias: la RPC bloquea y verifica el hábito, rechaza archivados, llama internamente al reemplazo endurecido cuando corresponde y actualiza los detalles dentro de la misma transacción. Cualquier error revierte el guardado completo.

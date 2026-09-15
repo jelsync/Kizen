@@ -2,7 +2,7 @@
 
 ## Estado
 
-La base frontend existe: React + Vite + TypeScript y un cliente Supabase centralizado. El esquema PostgreSQL, la integración con Auth, RLS y RPC están aplicados en el proyecto Supabase independiente y validados localmente. La interfaz de autenticación está en desarrollo y el despliegue aún no está configurado.
+La base frontend existe: React + Vite + TypeScript y un cliente Supabase centralizado. El esquema PostgreSQL, Auth, RLS y RPC están aplicados en el proyecto Supabase independiente. Autenticación está validada y el módulo de gestión de hábitos está implementado; el despliegue aún no está configurado.
 
 ## Componentes
 
@@ -51,7 +51,12 @@ Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestam
 ## Base frontend actual
 
 - `src/main.tsx` inicia React en modo estricto.
-- `src/App.tsx` contiene una pantalla base responsive sin funcionalidades de dominio.
+- `src/App.tsx` separa los flujos públicos de Auth del workspace autenticado.
+- `src/features/auth/` contiene registro, sesión y recuperación.
+- `src/features/habits/` contiene listado, formulario, estados, validación, mapeo y acceso a Supabase para la Fase 5.
+- Las lecturas de hábitos traen sus versiones y días protegidos por RLS. El frontend deriva la versión abierta y la última versión histórica para edición o reactivación.
+- Crear y editar detalles/programación usa una sola RPC por operación para que cada guardado sea atómico. Pausar, archivar y reactivar también pasan por RPC; el borrado directo queda limitado por RLS a hábitos ya archivados.
+- Las mutaciones recargan el estado confirmado desde Supabase; no se usa actualización optimista en el MVP.
 - `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
 - `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
 - `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.

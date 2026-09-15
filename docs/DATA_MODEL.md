@@ -2,7 +2,7 @@
 
 ## Estado y alcance
 
-Implementado en `supabase/migrations/202609150001_initial_kizen_schema.sql`, validado con 54 pruebas pgTAP y aplicado al proyecto Supabase remoto independiente de Kizen.
+Implementado mediante las migraciones versionadas en `supabase/migrations/`, aplicadas al proyecto Supabase remoto de Kizen y validadas con 91 pruebas pgTAP. Las pruebas incluyen el ciclo crear–pausar–reactivar–archivar–eliminar, atomicidad de edición y el rechazo de cambios de programación después de registrar progreso diario.
 
 El MVP usa recurrencia semanal. “Todos los días” son los siete días de la semana; no se implementan todavía intervalos, reglas mensuales ni RRULE. Los nombres físicos definitivos se conservarán en inglés y `snake_case`.
 
@@ -148,14 +148,14 @@ Se crean políticas separadas por cada operación concedida:
 | Tabla | Acceso directo de `authenticated` | Expresión de propiedad |
 | --- | --- | --- |
 | `profiles` | SELECT y UPDATE. | `id = (select auth.uid())` en `USING` y `WITH CHECK`. |
-| `habits` | SELECT, DELETE y UPDATE solo de nombre, descripción y categoría. La creación y los cambios de estado usan RPC. | `user_id = (select auth.uid())` en `USING` y `WITH CHECK`. |
+| `habits` | SELECT y DELETE únicamente cuando el hábito propio ya está archivado. Crear, editar detalles/programación y cambiar estado usa RPC. | SELECT usa `user_id = (select auth.uid())`; DELETE exige además `status = 'archived'`. |
 | `habit_schedules` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
 | `habit_schedule_days` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
 | `habit_logs` | SELECT y DELETE. Crear o reemplazar el total diario usa RPC. | `user_id = (select auth.uid())` en `USING`. |
 
 Las FK compuestas complementan RLS: aunque un usuario falsifique `user_id`, no puede enlazar una fila hija a un hábito o programación ajenos. Una actualización tampoco puede reasignar recursos a otro usuario.
 
-El cliente tendrá SELECT/UPDATE de su perfil. Su INSERT lo realiza el trigger de alta y la eliminación completa de cuenta requerirá un flujo privilegiado posterior; borrar solo `profiles` dejaría una cuenta Auth incoherente. La creación atómica usa `create_habit_with_schedule`; el reemplazo o reactivación usa `replace_habit_schedule`; pausar o archivar usa `set_habit_status`; y el progreso usa `set_daily_log`. Estas RPC calculan el propietario con `auth.uid()`, bloquean las filas relevantes y no aceptan un `user_id` del cliente. `habit_schedules` y `habit_schedule_days` conceden SELECT directo, pero ninguna mutación directa.
+El cliente tendrá SELECT/UPDATE de su perfil. Su INSERT lo realiza el trigger de alta y la eliminación completa de cuenta requerirá un flujo privilegiado posterior; borrar solo `profiles` dejaría una cuenta Auth incoherente. La creación atómica usa `create_habit_with_schedule`; la edición completa usa `update_habit_with_schedule`; el reemplazo o reactivación interno usa `replace_habit_schedule`; pausar o archivar usa `set_habit_status`; y el progreso usa `set_daily_log`. Estas RPC calculan el propietario con `auth.uid()`, bloquean las filas relevantes y no aceptan un `user_id` del cliente. `habit_schedules` y `habit_schedule_days` conceden SELECT directo, pero ninguna mutación directa.
 
 Cualquier vista expuesta usará comportamiento `security_invoker` o una alternativa que preserve RLS. No se usarán service-role keys en el frontend.
 

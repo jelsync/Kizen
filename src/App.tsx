@@ -2,6 +2,7 @@ import './App.css'
 import { useState } from 'react'
 import { AuthPanel } from './features/auth/AuthPanel'
 import { useAuthSession } from './features/auth/use-auth-session'
+import { HabitsPage } from './features/habits/HabitsPage'
 import { getSupabaseClient } from './lib/supabase'
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
     initializationError,
     finishPasswordRecovery,
   } = useAuthSession()
+  const showWorkspace = !isLoading
+    && !initializationError
+    && !isPasswordRecovery
+    && Boolean(session)
 
   async function handleSignOut() {
     setIsSigningOut(true)
@@ -32,13 +37,35 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
-      <header className="brand">
-        <span aria-hidden="true" className="brand-mark">K</span>
-        <span>Kizen</span>
+    <main className={`app-shell${showWorkspace ? ' workspace-shell' : ''}`}>
+      <header className={`brand${showWorkspace ? ' workspace-brand' : ''}`}>
+        <div className="brand-identity">
+          <span aria-hidden="true" className="brand-mark">K</span>
+          <span>Kizen</span>
+        </div>
+        {showWorkspace && session && (
+          <div className="account-actions">
+            <span title={session.user.email}>{session.user.email}</span>
+            <button
+              className="secondary-action"
+              disabled={isSigningOut}
+              type="button"
+              onClick={handleSignOut}
+            >
+              {isSigningOut ? 'Cerrando…' : 'Cerrar sesión'}
+            </button>
+          </div>
+        )}
       </header>
 
-      <div className="auth-layout">
+      {showWorkspace && session ? (
+        <HabitsPage
+          sessionMessage={sessionMessage}
+          signOutError={signOutError}
+          userId={session.user.id}
+        />
+      ) : (
+        <div className="auth-layout">
         <section className="auth-intro" aria-labelledby="kizen-title">
           <p className="eyebrow">HÁBITOS CON INTENCIÓN</p>
           <h1 id="kizen-title">Una práctica a la vez.</h1>
@@ -73,25 +100,8 @@ function App() {
 
         {!isLoading && !initializationError && !isPasswordRecovery && !session && <AuthPanel />}
 
-        {!isLoading && !initializationError && !isPasswordRecovery && session && (
-          <section className="state-card signed-in" aria-labelledby="session-title">
-            <p className="eyebrow">SESIÓN ACTIVA</p>
-            <h2 id="session-title">Tu espacio está listo.</h2>
-            <p>Ingresaste como <strong>{session.user.email}</strong>.</p>
-            <p>El dashboard de hábitos será el siguiente módulo del MVP.</p>
-            {sessionMessage && <p className="session-message" role="status">{sessionMessage}</p>}
-            {signOutError && <p className="session-message error" role="alert">{signOutError}</p>}
-            <button
-              className="secondary-action"
-              disabled={isSigningOut}
-              type="button"
-              onClick={handleSignOut}
-            >
-              {isSigningOut ? 'Cerrando…' : 'Cerrar esta sesión'}
-            </button>
-          </section>
-        )}
-      </div>
+        </div>
+      )}
     </main>
   )
 }

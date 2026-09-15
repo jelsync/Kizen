@@ -14,19 +14,23 @@
 - Migración inicial creada con tablas, constraints, trigger de perfiles, RLS, privilegios mínimos y RPC transaccionales.
 - Fase 3 completada: proyecto Supabase Kizen enlazado, migración inicial aplicada local y remotamente, y 54 pruebas pgTAP aprobadas.
 - Variables públicas locales configuradas para el proyecto Supabase correcto.
-- Base de autenticación web verificada con TypeScript, lint, build y 13 pruebas de frontend.
+- Fase 4 completada: registro, confirmación de correo, inicio/cierre de sesión y recuperación de contraseña implementados y validados contra Supabase remoto.
+- Base de autenticación web verificada con TypeScript, lint, build, 13 pruebas automatizadas y una prueba funcional completa con correo real.
+- Fase 5 implementada: listado, creación, edición, pausa, reactivación, archivado y borrado permanente de hábitos con programación semanal.
+- Ciclo de vida, atomicidad y restricciones destructivas de hábitos validados localmente con 91 pruebas pgTAP; frontend cubierto por 27 pruebas automatizadas.
+- Migración de edición atómica y borrado restringido aplicada al proyecto Supabase remoto; no quedan migraciones pendientes.
 
 ## En progreso
 
-- Fase 4: interfaz de registro, inicio/cierre de sesión y recuperación implementada; falta configurar las URL y política de contraseña remotas y validar el flujo real de correo.
+- Fase 5: pendiente validar el flujo completo desde la interfaz con una sesión real contra Supabase remoto.
 
 ## Pendiente
 
-- Terminar autenticación y después implementar hábitos, registros diarios, métricas, calendario e historial.
+- Tras validar la Fase 5, implementar registro diario, métricas, calendario e historial.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 
 ## Riesgos y restricciones actuales
 
-- Los callbacks de confirmación y recuperación de Auth requieren configurar las URL permitidas del entorno local y, posteriormente, de Cloudflare.
+- Los callbacks locales de Auth están configurados y validados. Al desplegar habrá que agregar la URL definitiva de Cloudflare antes de probarlos en producción.
 - CodeGraph se ejecuta localmente como `codegraph.cmd`; la integración MCP de Codex se aplicará al recargar la sesión.
 - No hay secretos versionados. El proyecto Supabase remoto existe, pero el Worker de Cloudflare aún no está configurado.

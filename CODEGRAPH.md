@@ -15,6 +15,13 @@ src/main.tsx
       │   └─ src/features/auth/AuthPanel.css
       ├─ src/features/auth/use-auth-session.ts
       │   └─ src/features/auth/auth-session-state.ts
+      ├─ src/features/habits/HabitsPage.tsx
+      │   ├─ src/features/habits/HabitForm.tsx
+      │   ├─ src/features/habits/HabitCard.tsx
+      │   ├─ src/features/habits/habits-repository.ts
+      │   ├─ src/features/habits/habit-mappers.ts
+      │   ├─ src/features/habits/habit-validation.ts
+      │   └─ src/features/habits/habit-dates.ts
       └─ src/App.css + src/index.css
 
 Integración con Supabase
@@ -24,7 +31,8 @@ Integración con Supabase
 Supabase local
   ├─ supabase/config.toml
   ├─ supabase/migrations/202609150001_initial_kizen_schema.sql
-  └─ supabase/tests/0001_initial_schema.test.sql
+  ├─ supabase/migrations/202609150002_habit_mutation_guards.sql
+  └─ supabase/tests/*.test.sql
 ```
 
 ## Dónde empezar
@@ -33,6 +41,8 @@ Supabase local
 | --- | --- |
 | Bootstrap y UI base | `src/main.tsx`, `src/App.tsx`, `src/App.css`, `src/index.css` |
 | Registro, sesión y recuperación | `src/features/auth/AuthPanel.tsx`, `src/features/auth/use-auth-session.ts`, `src/features/auth/auth-session-state.ts`, `src/features/auth/auth-redirects.ts`, `src/features/auth/auth-validation.ts` |
+| CRUD y programación de hábitos | `src/features/habits/HabitsPage.tsx`, `src/features/habits/habits-repository.ts`, `src/features/habits/habit-types.ts`, `src/features/habits/habit-mappers.ts` |
+| Formulario y validación de hábitos | `src/features/habits/HabitForm.tsx`, `src/features/habits/habit-validation.ts`, `src/features/habits/habit-dates.ts` |
 | Variables públicas y Supabase | `.env.example`, `src/lib/supabase-config.ts`, `src/lib/supabase.ts` |
 | Validación de configuración | `src/lib/supabase-config.test.ts` |
 | PostgreSQL, Auth, RLS y RPC | `supabase/migrations/`, `supabase/tests/`, `docs/DATA_MODEL.md` |

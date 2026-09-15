@@ -170,8 +170,20 @@ select is(
 );
 
 select lives_ok(
-  $$update public.habits set name = 'English study' where name = 'English'$$,
-  'owner can update presentation fields'
+  $$select public.update_habit_with_schedule(
+      (select id from public.habits where name = 'English'),
+      'English study',
+      'Daily language study',
+      'Learning',
+      false,
+      (statement_timestamp() at time zone 'UTC')::date,
+      60,
+      'duration',
+      'minute',
+      '19:00'::time,
+      array[1, 2, 3, 4, 5, 6, 7]::smallint[]
+    )$$,
+  'owner updates presentation fields through the atomic RPC'
 );
 
 select throws_ok(
@@ -396,7 +408,7 @@ select is(
 
 select is(
   (select count(*) from pg_catalog.pg_policies where schemaname = 'public'),
-  9::bigint,
+  8::bigint,
   'the expected operation-specific RLS policies exist'
 );
 
