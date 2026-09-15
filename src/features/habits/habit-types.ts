@@ -12,6 +12,14 @@ export type HabitSchedule = Readonly<{
   isoWeekdays: number[]
 }>
 
+export type HabitLog = Readonly<{
+  id: string
+  scheduleId: string
+  logDate: string
+  amount: number
+  note: string | null
+}>
+
 export type Habit = Readonly<{
   id: string
   name: string
@@ -22,6 +30,8 @@ export type Habit = Readonly<{
   updatedAt: string
   currentSchedule: HabitSchedule | null
   latestSchedule: HabitSchedule | null
+  schedules: HabitSchedule[]
+  logs: HabitLog[]
 }>
 
 export type HabitInput = Readonly<{

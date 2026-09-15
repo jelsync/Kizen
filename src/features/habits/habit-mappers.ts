@@ -19,6 +19,14 @@ export type HabitScheduleQueryRow = Readonly<{
   habit_schedule_days: ReadonlyArray<{ iso_weekday: number }>
 }>
 
+export type HabitLogQueryRow = Readonly<{
+  id: string
+  schedule_id: string
+  log_date: string
+  amount: number | string
+  note: string | null
+}>
+
 export type HabitQueryRow = Readonly<{
   id: string
   name: string
@@ -28,6 +36,7 @@ export type HabitQueryRow = Readonly<{
   created_at: string
   updated_at: string
   habit_schedules: HabitScheduleQueryRow[]
+  habit_logs: HabitLogQueryRow[]
 }>
 
 function mapSchedule(row: HabitScheduleQueryRow): HabitSchedule {
@@ -49,6 +58,15 @@ export function mapHabitRow(row: HabitQueryRow): Habit {
   const schedules = row.habit_schedules
     .map(mapSchedule)
     .sort((left, right) => right.effectiveFrom.localeCompare(left.effectiveFrom))
+  const logs = row.habit_logs
+    .map((log) => ({
+      id: log.id,
+      scheduleId: log.schedule_id,
+      logDate: log.log_date,
+      amount: Number(log.amount),
+      note: log.note,
+    }))
+    .sort((left, right) => right.logDate.localeCompare(left.logDate))
 
   return {
     id: row.id,
@@ -60,6 +78,8 @@ export function mapHabitRow(row: HabitQueryRow): Habit {
     updatedAt: row.updated_at,
     currentSchedule: schedules.find((schedule) => schedule.effectiveUntil === null) ?? null,
     latestSchedule: schedules[0] ?? null,
+    schedules,
+    logs,
   }
 }
 

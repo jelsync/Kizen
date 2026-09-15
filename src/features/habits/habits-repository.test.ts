@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildDailyLogArguments,
   buildCreateHabitArguments,
   buildStatusArguments,
   buildUpdateHabitArguments,
@@ -47,6 +48,15 @@ describe('habit repository errors', () => {
       p_habit_id: 'habit-1',
       p_status: 'archived',
       p_effective_on: '2026-09-15',
+    })
+  })
+
+  it('builds an absolute daily log payload', () => {
+    expect(buildDailyLogArguments('habit-1', '2026-09-15', 20)).toEqual({
+      p_habit_id: 'habit-1',
+      p_log_date: '2026-09-15',
+      p_amount: 20,
+      p_note: null,
     })
   })
 

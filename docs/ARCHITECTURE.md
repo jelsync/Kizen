@@ -57,6 +57,10 @@ Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestam
 - Las lecturas de hábitos traen sus versiones y días protegidos por RLS. El frontend deriva la versión abierta y la última versión histórica para edición o reactivación.
 - Crear y editar detalles/programación usa una sola RPC por operación para que cada guardado sea atómico. Pausar, archivar y reactivar también pasan por RPC; el borrado directo queda limitado por RLS a hábitos ya archivados.
 - Las mutaciones recargan el estado confirmado desde Supabase; no se usa actualización optimista en el MVP.
+- El workspace carga los logs diarios propios junto con cada hábito. El registro y la
+  actualización del total usan la RPC `set_daily_log`, que conserva la semántica
+  idempotente y la validación de fecha/programación en PostgreSQL. La tarjeta muestra
+  el estado de hoy y hasta siete registros históricos con la meta de su programación.
 - `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
 - `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
 - `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.

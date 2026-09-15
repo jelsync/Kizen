@@ -239,6 +239,138 @@
   font-weight: 700;
 }
 
+.daily-progress,
+.habit-history {
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.daily-progress-heading,
+.daily-progress-form,
+.habit-history li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.daily-progress-heading {
+  justify-content: space-between;
+}
+
+.daily-progress-heading strong,
+.habit-history > strong {
+  display: block;
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.daily-progress-heading div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.daily-progress-heading div span,
+.daily-progress-note,
+.habit-history > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.progress-status {
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.progress-status.complete,
+.history-complete {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.progress-status.pending,
+.history-pending {
+  background: #f5ecd8;
+  color: #805e20;
+}
+
+.progress-status.muted {
+  background: #efeee8;
+  color: var(--muted);
+}
+
+.daily-progress-form {
+  margin-top: 0.7rem;
+}
+
+.daily-progress-form label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1 1 10rem;
+}
+
+.daily-progress-form input {
+  width: 7rem;
+  min-height: 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.65rem;
+  background: #fffefa;
+  color: var(--ink);
+  font: inherit;
+}
+
+.daily-progress-form input:focus {
+  border-color: var(--accent);
+  outline: 0.2rem solid color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.progress-target {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.habit-history ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.habit-history li {
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.habit-history li > span:nth-child(2) {
+  margin-left: auto;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.habit-history li > span:last-child {
+  border-radius: 999px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .card-actions {
   margin-top: 1rem;
 }

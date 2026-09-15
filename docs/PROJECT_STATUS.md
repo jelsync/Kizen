@@ -21,14 +21,18 @@
 - Migración de edición atómica y borrado restringido aplicada al proyecto Supabase remoto; no quedan migraciones pendientes.
 - Corrección del trigger de días de programación aplicada al proyecto Supabase remoto; la creación de hábitos ya no evalúa `OLD` durante un `INSERT`.
 - Corrección adicional aplicada para evitar referencias a `OLD.schedule_id` en triggers de otra tabla.
+- Fase 6 implementada: registro diario idempotente desde la interfaz, estado de hoy y
+  historial reciente por hábito. La UI usa la zona horaria del perfil y la RPC
+  `set_daily_log`; no fue necesaria una migración adicional.
 
 ## En progreso
 
 - Fase 5: pendiente validar el flujo completo desde la interfaz con una sesión real contra Supabase remoto.
+- Fase 6: pendiente validar el flujo completo de registro y actualización de progreso con una sesión real.
 
 ## Pendiente
 
-- Tras validar la Fase 5, implementar registro diario, métricas, calendario e historial.
+- Tras validar las Fases 5 y 6, implementar métricas y calendario.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 
 ## Riesgos y restricciones actuales

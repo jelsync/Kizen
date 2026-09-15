@@ -13,3 +13,10 @@ export function formatDateInTimeZone(date: Date, timeZone: string): string {
 
   return `${values.year}-${values.month}-${values.day}`
 }
+
+export function formatCivilDate(date: string): string {
+  return new Intl.DateTimeFormat('es', {
+    dateStyle: 'medium',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`))
+}

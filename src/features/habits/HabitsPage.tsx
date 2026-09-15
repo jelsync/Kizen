@@ -7,6 +7,7 @@ import {
   deleteHabitPermanently,
   loadHabitWorkspace,
   setHabitStatus,
+  setDailyLog,
   updateHabit,
   type HabitWorkspace,
 } from './habits-repository'
@@ -45,6 +46,7 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
   const [actionError, setActionError] = useState<string>()
   const [successMessage, setSuccessMessage] = useState<string>()
   const [busyHabitId, setBusyHabitId] = useState<string>()
+  const [busyLogHabitId, setBusyLogHabitId] = useState<string>()
   const [currentTime, setCurrentTime] = useState(() => new Date())
 
   const refresh = useCallback(async (showLoading = false) => {
@@ -161,6 +163,21 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
     }
   }
 
+  async function handleSaveDailyLog(habit: Habit, amount: number) {
+    if (!workspace || !localToday) return
+    resetFeedback()
+    setBusyLogHabitId(habit.id)
+    try {
+      await setDailyLog(habit.id, localToday, amount)
+      await refresh()
+      setSuccessMessage('Progreso diario guardado.')
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'No pudimos guardar el progreso.')
+    } finally {
+      setBusyLogHabitId(undefined)
+    }
+  }
+
   if (editor) {
     return (
       <HabitForm
@@ -248,7 +265,9 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
             <HabitCard
               habit={habit}
               isBusy={busyHabitId === habit.id}
-              key={habit.id}
+              isLogBusy={busyLogHabitId === habit.id}
+              key={`${habit.id}-${localToday}-${habit.logs.find((log) => log.logDate === localToday)?.amount ?? 'empty'}`}
+              localToday={localToday ?? ''}
               onArchive={(selected) => changeStatus(selected, 'archived')}
               onDelete={handleDelete}
               onEdit={(selected) => {
@@ -256,6 +275,7 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
                 setEditor({ mode: 'edit', habit: selected })
               }}
               onPause={(selected) => changeStatus(selected, 'paused')}
+              onSaveDailyLog={handleSaveDailyLog}
               onReactivate={(selected) => {
                 resetFeedback()
                 setEditor({ mode: 'reactivate', habit: selected })

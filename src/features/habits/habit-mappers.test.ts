@@ -32,6 +32,15 @@ const row = {
       habit_schedule_days: [{ iso_weekday: 3 }, { iso_weekday: 1 }],
     },
   ],
+  habit_logs: [
+    {
+      id: 'log-1',
+      schedule_id: 'current',
+      log_date: '2026-09-15',
+      amount: '20.00',
+      note: null,
+    },
+  ],
 }
 
 describe('habit mappers', () => {
@@ -41,6 +50,7 @@ describe('habit mappers', () => {
     expect(habit.currentSchedule?.id).toBe('current')
     expect(habit.currentSchedule?.scheduledTime).toBe('19:30')
     expect(habit.currentSchedule?.isoWeekdays).toEqual([1, 3])
+    expect(habit.logs[0]).toMatchObject({ logDate: '2026-09-15', amount: 20 })
   })
 
   it('prefills a form from the current schedule', () => {

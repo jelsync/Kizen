@@ -22,6 +22,13 @@ const habitsSelect = `
     unit,
     scheduled_time,
     habit_schedule_days (iso_weekday)
+  ),
+  habit_logs (
+    id,
+    schedule_id,
+    log_date,
+    amount,
+    note
   )
 `
 
@@ -66,6 +73,15 @@ export function toHabitError(error: unknown): Error {
   }
   if (message.includes('Weekdays must be unique ISO values from 1 to 7')) {
     return new Error('Selecciona al menos un día válido.')
+  }
+  if (message.includes('Log date and a non-negative amount are required')) {
+    return new Error('Registra una cantidad válida, igual o mayor que cero.')
+  }
+  if (message.includes('Future habit logs are not allowed')) {
+    return new Error('No puedes registrar progreso en una fecha futura.')
+  }
+  if (message.includes('Habit is not scheduled for this date')) {
+    return new Error('Este hábito no está programado para esa fecha.')
   }
   if (message.includes('Could not find the function')) {
     return new Error('La base de datos aún no tiene la última versión. Aplica las migraciones e inténtalo otra vez.')
@@ -166,6 +182,20 @@ export function buildStatusArguments(
   }
 }
 
+export function buildDailyLogArguments(
+  habitId: string,
+  logDate: string,
+  amount: number,
+  note: string | null = null,
+) {
+  return {
+    p_habit_id: habitId,
+    p_log_date: logDate,
+    p_amount: amount,
+    p_note: note,
+  }
+}
+
 export function buildUpdateHabitArguments(
   habitId: string,
   input: HabitInput,
@@ -213,6 +243,20 @@ export async function setHabitStatus(
   const { error } = await getSupabaseClient().rpc(
     'set_habit_status',
     buildStatusArguments(habitId, status, localToday),
+  )
+
+  if (error) throw toHabitError(error)
+}
+
+export async function setDailyLog(
+  habitId: string,
+  logDate: string,
+  amount: number,
+  note: string | null = null,
+): Promise<void> {
+  const { error } = await getSupabaseClient().rpc(
+    'set_daily_log',
+    buildDailyLogArguments(habitId, logDate, amount, note),
   )
 
   if (error) throw toHabitError(error)

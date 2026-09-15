@@ -24,9 +24,11 @@ Registro, inicio/cierre de sesión y recuperación de contraseña.
 
 CRUD, activación/desactivación, metas y programación.
 
-## Fase 6 — Registro diario
+## Fase 6 — Registro diario ✅
 
-Registro de cantidad, completado y historial.
+Registro de cantidad, completado y historial. La interfaz registra el total diario
+mediante `set_daily_log`, respeta la fecha local del perfil y muestra el estado y
+los últimos registros de cada hábito.
 
 ## Fase 7 — Métricas
 

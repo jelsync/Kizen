@@ -1,10 +1,15 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { type FormEvent, useEffect, useId, useRef, useState } from 'react'
 import { ISO_WEEKDAYS, type Habit } from './habit-types'
+import { formatCivilDate } from './habit-dates'
+import { getHabitDayProgress } from './habit-progress'
 
 type HabitCardProps = Readonly<{
   habit: Habit
   isBusy: boolean
+  isLogBusy: boolean
+  localToday: string
   onEdit: (habit: Habit) => void
+  onSaveDailyLog: (habit: Habit, amount: number) => Promise<void>
   onPause: (habit: Habit) => Promise<void>
   onReactivate: (habit: Habit) => void
   onArchive: (habit: Habit) => Promise<void>
@@ -39,7 +44,10 @@ function weekdaySummary(habit: Habit): string {
 export function HabitCard({
   habit,
   isBusy,
+  isLogBusy,
+  localToday,
   onEdit,
+  onSaveDailyLog,
   onPause,
   onReactivate,
   onArchive,
@@ -49,6 +57,8 @@ export function HabitCard({
   const confirmationTitleId = useId()
   const cancelConfirmationRef = useRef<HTMLButtonElement>(null)
   const schedule = habit.currentSchedule ?? habit.latestSchedule
+  const todayProgress = getHabitDayProgress(habit, localToday)
+  const [amount, setAmount] = useState(todayProgress.log ? String(todayProgress.amount) : '')
 
   useEffect(() => {
     if (confirmation) cancelConfirmationRef.current?.focus()
@@ -72,6 +82,85 @@ export function HabitCard({
       <div className="schedule-row">
         <span>{weekdaySummary(habit)}</span>
         <span>{schedule?.scheduledTime ? `A las ${schedule.scheduledTime}` : 'Sin hora fija'}</span>
+      </div>
+
+      {habit.status === 'active' && (
+        <div className="daily-progress">
+          <div className="daily-progress-heading">
+            <div>
+              <strong>Progreso de hoy</strong>
+              <span>{localToday}</span>
+            </div>
+            {todayProgress.schedule ? (
+              <span className={`progress-status ${todayProgress.completed ? 'complete' : 'pending'}`}>
+                {todayProgress.completed ? 'Completado' : 'Pendiente'}
+              </span>
+            ) : (
+              <span className="progress-status muted">No programado</span>
+            )}
+          </div>
+
+          {todayProgress.schedule ? (
+            <form
+              className="daily-progress-form"
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                event.preventDefault()
+                const parsedAmount = Number(amount)
+                if (Number.isFinite(parsedAmount) && parsedAmount >= 0) {
+                  void onSaveDailyLog(habit, parsedAmount)
+                }
+              }}
+            >
+              <label>
+                <span className="sr-only">Cantidad lograda hoy</span>
+                <input
+                  aria-label={`Cantidad lograda hoy para ${habit.name}`}
+                  disabled={isLogBusy || isBusy}
+                  inputMode="decimal"
+                  min="0"
+                  required
+                  step="0.01"
+                  type="number"
+                  value={amount}
+                  onChange={(event) => setAmount(event.target.value)}
+                />
+                <span>{todayProgress.schedule.unit === 'minute' ? 'min' : todayProgress.schedule.unit}</span>
+              </label>
+              <span className="progress-target">
+                Meta: {todayProgress.schedule.targetAmount} {todayProgress.schedule.unit === 'minute' ? 'min' : todayProgress.schedule.unit}
+              </span>
+              <button className="text-action" disabled={isLogBusy || isBusy} type="submit">
+                {isLogBusy ? 'Guardando…' : todayProgress.log ? 'Actualizar' : 'Registrar'}
+              </button>
+            </form>
+          ) : (
+            <p className="daily-progress-note">Este hábito descansa hoy.</p>
+          )}
+        </div>
+      )}
+
+      <div className="habit-history">
+        <strong>Historial reciente</strong>
+        {habit.logs.length === 0 ? (
+          <p>Aún no hay registros diarios.</p>
+        ) : (
+          <ul>
+            {habit.logs.slice(0, 7).map((log) => {
+              const logSchedule = habit.schedules.find((entry) => entry.id === log.scheduleId)
+              const completed = Boolean(logSchedule && log.amount >= logSchedule.targetAmount)
+              const unit = logSchedule?.unit === 'minute' ? 'min' : logSchedule?.unit ?? ''
+              return (
+                <li key={log.id}>
+                  <span>{formatCivilDate(log.logDate)}</span>
+                  <span>{log.amount} {unit}</span>
+                  <span className={completed ? 'history-complete' : 'history-pending'}>
+                    {completed ? 'Completado' : 'Pendiente'}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+        )}
       </div>
 
       {confirmation ? (
