@@ -1,0 +1,122 @@
+.app-shell {
+  width: min(100% - 2rem, 68rem);
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #f8fafc;
+  font-size: 1.15rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.brand-mark {
+  display: grid;
+  width: 2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: #c8f169;
+  color: #18210e;
+  font-family: Georgia, serif;
+  font-weight: 700;
+}
+
+.intro {
+  max-width: 42rem;
+  padding: clamp(5rem, 14vw, 10rem) 0 clamp(4rem, 9vw, 7rem);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #c8f169;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 11ch;
+  margin-bottom: 1.25rem;
+  color: #f8fafc;
+  font-family: Georgia, serif;
+  font-size: clamp(3.25rem, 10vw, 6.5rem);
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.92;
+}
+
+.intro > p:last-child {
+  max-width: 35rem;
+  color: #aab7a3;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.foundation {
+  display: grid;
+  border-top: 1px solid #31402d;
+}
+
+.foundation article {
+  min-height: 13rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid #31402d;
+}
+
+.foundation span {
+  color: #c8f169;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.foundation h2 {
+  margin: 2.5rem 0 0.75rem;
+  color: #f8fafc;
+  font-size: 1.1rem;
+}
+
+.foundation p {
+  max-width: 19rem;
+  margin-bottom: 0;
+  color: #9caa98;
+  line-height: 1.55;
+}
+
+@media (min-width: 42rem) {
+  .app-shell {
+    padding-top: 2rem;
+  }
+
+  .foundation {
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid #31402d;
+  }
+
+  .foundation article {
+    min-height: 15rem;
+    padding: 2rem;
+    border-bottom: 0;
+    border-right: 1px solid #31402d;
+  }
+
+  .foundation article:first-child {
+    padding-left: 0;
+  }
+
+  .foundation article:last-child {
+    border-right: 0;
+    padding-right: 0;
+  }
+}

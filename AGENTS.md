@@ -7,10 +7,11 @@ Kizen es una aplicación web para desarrollar hábitos con programación, regist
 ## Contexto de trabajo
 
 1. Lee `docs/PROJECT_STATUS.md` antes de actuar.
-2. Para cambios de arquitectura, datos o seguridad, consulta además `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md` y `docs/DECISIONS.md`.
-3. Revisa `git status` y, si hay cambios, `git diff` antes de modificar archivos existentes. Los cambios locales ajenos se preservan.
-4. Consulta CodeGraph antes de recorrer masivamente código o modificar módulos existentes, si está configurado en el entorno. Analiza relaciones, impacto y pruebas afectadas. Si no está disponible, indícalo; no inventes resultados.
-5. Ejecuta pruebas y build proporcionales al cambio, revisa el diff y actualiza la documentación cuando cambie la realidad del sistema.
+2. Consulta `CODEGRAPH.md` para los puntos de entrada y usa CodeGraph cuando esté disponible.
+3. Para cambios de arquitectura, datos o seguridad, consulta además `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md` y `docs/DECISIONS.md`.
+4. Revisa `git status` y, si hay cambios, `git diff` antes de modificar archivos existentes. Los cambios locales ajenos se preservan.
+5. Consulta CodeGraph antes de recorrer masivamente código o modificar módulos existentes, si está configurado en el entorno. Analiza relaciones, impacto y pruebas afectadas. Si no está disponible, indícalo; no inventes resultados.
+6. Ejecuta pruebas y build proporcionales al cambio, revisa el diff y actualiza la documentación cuando cambie la realidad del sistema.
 
 ## Arquitectura objetivo del MVP
 

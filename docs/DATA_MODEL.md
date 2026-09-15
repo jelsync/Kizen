@@ -2,7 +2,7 @@
 
 ## Estado y alcance
 
-Diseño aprobado para convertirlo en migraciones durante la Fase 3. Aún no existe una base de datos de Kizen ni se ha ejecutado SQL.
+Implementado localmente en `supabase/migrations/202609150001_initial_kizen_schema.sql`. La aplicación de la migración al proyecto remoto queda pendiente hasta que el proyecto Kizen termine de crearse y se vincule de forma segura.
 
 El MVP usa recurrencia semanal. “Todos los días” son los siete días de la semana; no se implementan todavía intervalos, reglas mensuales ni RRULE. Los nombres físicos definitivos se conservarán en inglés y `snake_case`.
 
@@ -55,7 +55,7 @@ Identidad estable y estado de ciclo de vida.
 
 Además de la PK se declara `UNIQUE (id, user_id)`. Esta clave permite que tablas hijas validen con una FK compuesta que el hábito y el propietario coinciden.
 
-Pausar o archivar cierra la programación vigente y conserva el historial. Por defecto surte efecto al siguiente día local; puede aplicarse hoy si todavía no hay log. Archivar es la acción normal de “eliminar” de la vista activa. El borrado permanente será explícito, con confirmación, y eliminará por cascada programaciones, días, logs y recordatorios.
+Pausar o archivar cierra la programación vigente y conserva el historial. En el MVP el cambio surte efecto hoy si todavía no hay log; si ya existe progreso, debe ejecutarse al comenzar el siguiente día local. Archivar es la acción normal de “eliminar” de la vista activa. El borrado permanente será explícito, con confirmación, y eliminará por cascada programaciones, días, logs y recordatorios.
 
 ## `habit_schedules`
 
@@ -81,10 +81,11 @@ Reglas:
 - `UNIQUE (id, habit_id, user_id)` permite que un log referencie exactamente la versión y propiedad correctas.
 - Una versión que ya entró en vigor no se edita. Cambiar días, meta, unidad u hora cierra la versión y crea otra.
 - Crear un hábito, su primera programación y sus días debe ser una operación PostgreSQL atómica expuesta como RPC pequeña.
+- En el MVP un hábito nuevo comienza en la fecha local de creación; no se programan altas futuras.
 - Un constraint trigger diferible garantiza que cada versión tenga al menos un día antes del commit.
 - `authenticated` solo lee directamente programaciones y días. Crear, cerrar o reemplazar versiones pasa por RPC `SECURITY DEFINER` endurecidas: `search_path = ''`, nombres calificados, ejecución revocada a `public`/`anon`, concedida a `authenticated`, verificación explícita de `auth.uid()` y bloqueo del hábito. Las RPC nunca editan ni borran una versión histórica; solo cierran la vigente y crean otra. La única eliminación histórica es la cascada de un hábito borrado explícitamente.
 
-Por defecto, un cambio empieza el siguiente día local. Aplicarlo hoy solo será válido si no existe un log para hoy.
+Los cambios se aplican en el día local actual y solo si no existe un log de hoy. Si la versión actual también comenzó hoy y todavía no tiene historial, puede reemplazarse de forma atómica; después de entrar en el historial nunca se edita ni elimina. No se mantienen cambios pendientes con fecha futura en el MVP.
 
 ## `habit_schedule_days`
 
@@ -147,14 +148,14 @@ Se crean políticas separadas por cada operación concedida:
 | Tabla | Acceso directo de `authenticated` | Expresión de propiedad |
 | --- | --- | --- |
 | `profiles` | SELECT y UPDATE. | `id = (select auth.uid())` en `USING` y `WITH CHECK`. |
-| `habits` | SELECT, INSERT, UPDATE y DELETE. | `user_id = (select auth.uid())` en `USING` y `WITH CHECK`. |
+| `habits` | SELECT, DELETE y UPDATE solo de nombre, descripción y categoría. La creación y los cambios de estado usan RPC. | `user_id = (select auth.uid())` en `USING` y `WITH CHECK`. |
 | `habit_schedules` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
 | `habit_schedule_days` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
-| `habit_logs` | SELECT, INSERT, UPDATE y DELETE. | `user_id = (select auth.uid())` en `USING` y `WITH CHECK`. |
+| `habit_logs` | SELECT y DELETE. Crear o reemplazar el total diario usa RPC. | `user_id = (select auth.uid())` en `USING`. |
 
 Las FK compuestas complementan RLS: aunque un usuario falsifique `user_id`, no puede enlazar una fila hija a un hábito o programación ajenos. Una actualización tampoco puede reasignar recursos a otro usuario.
 
-El cliente tendrá SELECT/UPDATE de su perfil. Su INSERT lo realiza el trigger de alta y la eliminación completa de cuenta requerirá un flujo privilegiado posterior; borrar solo `profiles` dejaría una cuenta Auth incoherente. `habits` y `habit_logs` admiten CRUD del propietario. `habit_schedules` y `habit_schedule_days` conceden SELECT directo; no conceden INSERT, UPDATE ni DELETE directos y se mutan solo mediante las RPC controladas descritas arriba.
+El cliente tendrá SELECT/UPDATE de su perfil. Su INSERT lo realiza el trigger de alta y la eliminación completa de cuenta requerirá un flujo privilegiado posterior; borrar solo `profiles` dejaría una cuenta Auth incoherente. La creación atómica usa `create_habit_with_schedule`; el reemplazo o reactivación usa `replace_habit_schedule`; pausar o archivar usa `set_habit_status`; y el progreso usa `set_daily_log`. Estas RPC calculan el propietario con `auth.uid()`, bloquean las filas relevantes y no aceptan un `user_id` del cliente. `habit_schedules` y `habit_schedule_days` conceden SELECT directo, pero ninguna mutación directa.
 
 Cualquier vista expuesta usará comportamiento `security_invoker` o una alternativa que preserve RLS. No se usarán service-role keys en el frontend.
 

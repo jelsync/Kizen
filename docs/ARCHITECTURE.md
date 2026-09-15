@@ -2,7 +2,7 @@
 
 ## Estado
 
-La implementación aún no existe. Esta es la arquitectura objetivo aprobada para el MVP y debe actualizarse al materializarse.
+La base frontend existe: React + Vite + TypeScript y un cliente Supabase diferido. El esquema PostgreSQL, la integración con Auth, RLS y RPC están implementados como migración local; todavía falta ejecutar la validación SQL completa y aplicarla al proyecto Supabase remoto. El despliegue aún no está configurado.
 
 ## Componentes
 
@@ -32,12 +32,20 @@ El frontend consume Supabase para el MVP. No se prevé un backend Node/NestJS ni
 
 ## Dependencias principales previstas
 
-React, Vite, TypeScript y `@supabase/supabase-js`. Cualquier dependencia adicional requiere una necesidad concreta y una revisión de impacto.
+React, Vite, TypeScript, `@supabase/supabase-js`, Oxlint y Vitest. Cualquier dependencia adicional requiere una necesidad concreta y una revisión de impacto.
 
 ## Flujo de dominio del MVP
 
-El frontend usa el cliente público de Supabase con la sesión autenticada. Las operaciones simples consultan tablas protegidas por RLS. Las operaciones que deben ser atómicas —crear hábito con programación y cambiar una programación versionada— se implementarán como funciones PostgreSQL RPC pequeñas dentro de Supabase; esto no introduce un backend independiente.
+El frontend usa el cliente público de Supabase con la sesión autenticada. Las operaciones simples consultan tablas protegidas por RLS. Las operaciones que deben ser atómicas —crear hábito con programación, cambiar estado o programación y registrar progreso— usan funciones PostgreSQL RPC pequeñas dentro de Supabase; esto no introduce un backend independiente.
 
 La programación semanal tendrá versiones con vigencia por fechas. Los registros diarios referencian la versión aplicable, por lo que editar días, meta, unidad u hora no cambia el historial. Rachas y constancia se calculan desde esas versiones y los logs; no se almacenan contadores derivados durante el MVP.
 
 Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestamps técnicos se almacenan como `timestamptz`. Esta separación mantiene estable el calendario histórico ante cambios de zona horaria.
+
+## Base frontend actual
+
+- `src/main.tsx` inicia React en modo estricto.
+- `src/App.tsx` contiene una pantalla base responsive sin funcionalidades de dominio.
+- `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
+- `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
+- `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.

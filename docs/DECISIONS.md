@@ -64,3 +64,24 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Decisión: las duraciones se almacenan canónicamente en minutos; otros valores se agregan solo por hábito y unidad exacta. El registro diario recibe un total absoluto idempotente y aplica última transacción confirmada.
 - Motivo: evitar sumas ambiguas entre textos de unidad y evitar que un doble envío se interprete accidentalmente como incremento.
 - Consecuencias: la UI convierte minutos para presentación. Una futura acción incremental requerirá una RPC atómica específica.
+
+## DEC-010 — Cliente Supabase diferido y variables públicas
+
+- Fecha: 2026-09-15
+- Decisión: centralizar la lectura de `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` en un módulo validable, y crear el cliente Supabase solo cuando un flujo lo requiera.
+- Motivo: conservar una pantalla base funcional antes de que exista el proyecto Supabase y evitar dispersar la configuración o exponer secretos.
+- Consecuencias: las funcionalidades que consulten datos deben usar `getSupabaseClient()`. Las únicas variables admitidas en frontend son públicas y `.env.local` nunca se versiona.
+
+## DEC-011 — Migraciones versionadas, exposición explícita y escrituras atómicas
+
+- Fecha: 2026-09-15
+- Decisión: administrar PostgreSQL mediante migraciones de Supabase versionadas, desactivar la exposición automática de tablas y conceder privilegios explícitos. Las operaciones que deben mantener varias invariantes se realizan con RPC `SECURITY DEFINER` endurecidas.
+- Motivo: RLS filtra filas, pero no garantiza por sí sola que hábito, programación, estado y logs cambien atómicamente ni limita automáticamente los privilegios del Data API.
+- Consecuencias: el frontend no inserta directamente hábitos o logs ni modifica estados o programaciones. Las RPC obtienen el propietario desde `auth.uid()`, usan `search_path = ''`, verifican propiedad y se conceden solo a `authenticated`.
+
+## DEC-012 — Cambios de programación efectivos en el día actual
+
+- Fecha: 2026-09-15
+- Decisión: crear, reemplazar, pausar, archivar o reactivar se aplica en la fecha local actual. Si hoy ya tiene progreso, el cambio se ejecuta al comenzar el siguiente día; no se almacenan cambios de estado futuros en el MVP.
+- Motivo: evita que `habits.status` diga una cosa mientras la vigencia de la programación todavía dice otra.
+- Consecuencias: una versión creada hoy sin logs puede sustituirse o retirarse de forma atómica porque aún no tiene historia. Una versión con historia se cierra y nunca se reescribe.

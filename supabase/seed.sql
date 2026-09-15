@@ -1,0 +1,2 @@
+-- Kizen does not require shared seed data yet.
+-- User-owned examples belong in isolated tests, not in development defaults.
