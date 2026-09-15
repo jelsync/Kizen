@@ -7,16 +7,17 @@
 - Repositorio Git inicializado y remoto `jelsync/Kizen` configurado.
 - Base de contexto para agentes en `AGENTS.md` y `docs/`.
 - Arquitectura objetivo del MVP y principios de independencia de Gasti documentados.
+- Fase 1: modelo lógico, programación versionada, semántica temporal, métricas, constraints y estrategia RLS definidos.
 
 ## En progreso
 
-- Fase 0: verificar/configurar una integración CodeGraph compatible con Windows e IntelliJ IDEA.
+- Ninguna fase de implementación activa al cerrar esta actualización.
 
 ## Pendiente
 
-- Validar diseño detallado del esquema PostgreSQL, constraints, zona horaria y políticas RLS.
+- Configurar una integración CodeGraph compatible con Windows e IntelliJ IDEA cuando el MCP esté disponible para la sesión.
 - Crear base React + Vite + TypeScript y cliente Supabase.
-- Configurar proyecto Supabase independiente, migraciones y Auth.
+- Configurar proyecto Supabase independiente y convertir el diseño aprobado en migraciones y pruebas RLS.
 - Implementar autenticación, hábitos, registros diarios, métricas, calendario e historial.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 

@@ -33,3 +33,11 @@ El frontend consume Supabase para el MVP. No se prevé un backend Node/NestJS ni
 ## Dependencias principales previstas
 
 React, Vite, TypeScript y `@supabase/supabase-js`. Cualquier dependencia adicional requiere una necesidad concreta y una revisión de impacto.
+
+## Flujo de dominio del MVP
+
+El frontend usa el cliente público de Supabase con la sesión autenticada. Las operaciones simples consultan tablas protegidas por RLS. Las operaciones que deben ser atómicas —crear hábito con programación y cambiar una programación versionada— se implementarán como funciones PostgreSQL RPC pequeñas dentro de Supabase; esto no introduce un backend independiente.
+
+La programación semanal tendrá versiones con vigencia por fechas. Los registros diarios referencian la versión aplicable, por lo que editar días, meta, unidad u hora no cambia el historial. Rachas y constancia se calculan desde esas versiones y los logs; no se almacenan contadores derivados durante el MVP.
+
+Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestamps técnicos se almacenan como `timestamptz`. Esta separación mantiene estable el calendario histórico ante cambios de zona horaria.
