@@ -12,21 +12,21 @@
 - CodeGraph instalado para Codex, inicializado en Kizen y documentado en `CODEGRAPH.md`.
 - Supabase CLI inicializado localmente con exposición automática de tablas desactivada.
 - Migración inicial creada con tablas, constraints, trigger de perfiles, RLS, privilegios mínimos y RPC transaccionales.
-- Pruebas pgTAP creadas para esquema, aislamiento, permisos, constraints y registro diario.
+- Fase 3 completada: proyecto Supabase Kizen enlazado, migración inicial aplicada local y remotamente, y 54 pruebas pgTAP aprobadas.
+- Variables públicas locales configuradas para el proyecto Supabase correcto.
+- Base de autenticación web verificada con TypeScript, lint, build y 13 pruebas de frontend.
 
 ## En progreso
 
-- Fase 3: validación local de la migración y creación/vinculación del proyecto Supabase independiente.
+- Fase 4: interfaz de registro, inicio/cierre de sesión y recuperación implementada; falta configurar las URL y política de contraseña remotas y validar el flujo real de correo.
 
 ## Pendiente
 
-- Terminar de crear y vincular el proyecto Supabase independiente, validar la migración local/remota y configurar las variables públicas.
-- Implementar autenticación, hábitos, registros diarios, métricas, calendario e historial.
+- Terminar autenticación y después implementar hábitos, registros diarios, métricas, calendario e historial.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 
 ## Riesgos y restricciones actuales
 
-- El esquema existe como migración local, pero todavía no se ha aplicado a un proyecto Supabase remoto.
-- La primera descarga de Supabase local sufrió timeouts y Docker Desktop dejó de responder; las pruebas pgTAP están creadas pero aún no tienen una ejecución completa confirmada.
+- Los callbacks de confirmación y recuperación de Auth requieren configurar las URL permitidas del entorno local y, posteriormente, de Cloudflare.
 - CodeGraph se ejecuta localmente como `codegraph.cmd`; la integración MCP de Codex se aplicará al recargar la sesión.
-- No hay secretos, proyecto Supabase ni Worker configurados en el repositorio.
+- No hay secretos versionados. El proyecto Supabase remoto existe, pero el Worker de Cloudflare aún no está configurado.

@@ -1,0 +1,120 @@
+.auth-card {
+  width: min(100%, 31rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  border: 1px solid var(--line);
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 1.5rem 4rem rgba(30, 42, 36, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.auth-heading h1 {
+  margin: 0.45rem 0 0.65rem;
+  font-size: clamp(2rem, 8vw, 3rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.auth-heading > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 3.2rem;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.auth-form input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.primary-action {
+  min-height: 3.2rem;
+  border: 0;
+  border-radius: 0.9rem;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.primary-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.primary-action:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.form-message {
+  margin: 0;
+  border-radius: 0.8rem;
+  padding: 0.8rem 0.9rem;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.form-message.error {
+  background: #fff0ed;
+  color: #8a3023;
+}
+
+.auth-links {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.auth-links p {
+  margin: 0;
+}
+
+.auth-links button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent-strong);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.auth-links button:hover {
+  text-decoration: underline;
+}

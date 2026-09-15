@@ -9,9 +9,15 @@ Este archivo es el índice de navegación breve para CodeGraph y agentes. Comple
 ```text
 src/main.tsx
   └─ src/App.tsx
+      ├─ src/features/auth/AuthPanel.tsx
+      │   ├─ src/features/auth/auth-validation.ts
+      │   ├─ src/features/auth/auth-redirects.ts
+      │   └─ src/features/auth/AuthPanel.css
+      ├─ src/features/auth/use-auth-session.ts
+      │   └─ src/features/auth/auth-session-state.ts
       └─ src/App.css + src/index.css
 
-Integración futura con Supabase
+Integración con Supabase
   └─ src/lib/supabase.ts
       └─ src/lib/supabase-config.ts
 
@@ -26,6 +32,7 @@ Supabase local
 | Tarea | Archivos iniciales |
 | --- | --- |
 | Bootstrap y UI base | `src/main.tsx`, `src/App.tsx`, `src/App.css`, `src/index.css` |
+| Registro, sesión y recuperación | `src/features/auth/AuthPanel.tsx`, `src/features/auth/use-auth-session.ts`, `src/features/auth/auth-session-state.ts`, `src/features/auth/auth-redirects.ts`, `src/features/auth/auth-validation.ts` |
 | Variables públicas y Supabase | `.env.example`, `src/lib/supabase-config.ts`, `src/lib/supabase.ts` |
 | Validación de configuración | `src/lib/supabase-config.test.ts` |
 | PostgreSQL, Auth, RLS y RPC | `supabase/migrations/`, `supabase/tests/`, `docs/DATA_MODEL.md` |
@@ -41,6 +48,7 @@ En Windows, ejecuta `codegraph.cmd` porque la política local bloquea la envoltu
 ```powershell
 cd C:\Users\jelsy\IdeaProjects\Kizen
 codegraph.cmd orient --root . --budget small
+codegraph.cmd sync
 codegraph.cmd impact --base HEAD --head WORKTREE
 codegraph.cmd review --base HEAD --head WORKTREE
 ```

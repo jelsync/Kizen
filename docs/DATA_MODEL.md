@@ -2,7 +2,7 @@
 
 ## Estado y alcance
 
-Implementado localmente en `supabase/migrations/202609150001_initial_kizen_schema.sql`. La aplicación de la migración al proyecto remoto queda pendiente hasta que el proyecto Kizen termine de crearse y se vincule de forma segura.
+Implementado en `supabase/migrations/202609150001_initial_kizen_schema.sql`, validado con 54 pruebas pgTAP y aplicado al proyecto Supabase remoto independiente de Kizen.
 
 El MVP usa recurrencia semanal. “Todos los días” son los siete días de la semana; no se implementan todavía intervalos, reglas mensuales ni RRULE. Los nombres físicos definitivos se conservarán en inglés y `snake_case`.
 

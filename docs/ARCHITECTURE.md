@@ -2,7 +2,7 @@
 
 ## Estado
 
-La base frontend existe: React + Vite + TypeScript y un cliente Supabase diferido. El esquema PostgreSQL, la integración con Auth, RLS y RPC están implementados como migración local; todavía falta ejecutar la validación SQL completa y aplicarla al proyecto Supabase remoto. El despliegue aún no está configurado.
+La base frontend existe: React + Vite + TypeScript y un cliente Supabase centralizado. El esquema PostgreSQL, la integración con Auth, RLS y RPC están aplicados en el proyecto Supabase independiente y validados localmente. La interfaz de autenticación está en desarrollo y el despliegue aún no está configurado.
 
 ## Componentes
 
@@ -39,6 +39,12 @@ React, Vite, TypeScript, `@supabase/supabase-js`, Oxlint y Vitest. Cualquier dep
 El frontend usa el cliente público de Supabase con la sesión autenticada. Las operaciones simples consultan tablas protegidas por RLS. Las operaciones que deben ser atómicas —crear hábito con programación, cambiar estado o programación y registrar progreso— usan funciones PostgreSQL RPC pequeñas dentro de Supabase; esto no introduce un backend independiente.
 
 La programación semanal tendrá versiones con vigencia por fechas. Los registros diarios referencian la versión aplicable, por lo que editar días, meta, unidad u hora no cambia el historial. Rachas y constancia se calculan desde esas versiones y los logs; no se almacenan contadores derivados durante el MVP.
+
+## Flujo de autenticación
+
+El navegador usa únicamente la URL y clave pública de Supabase. Registro, inicio y cierre de sesión se realizan con `supabase.auth`; la sesión persistida y sus cambios se observan mediante `onAuthStateChange`. El registro envía `display_name` como metadata y el trigger PostgreSQL crea `profiles`.
+
+La recuperación envía al usuario de vuelta al origen de Kizen. El evento `PASSWORD_RECOVERY` habilita el formulario para establecer la nueva contraseña con la sesión temporal entregada por Supabase. No se almacenan tokens manualmente ni se usa `service_role` en el navegador.
 
 Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestamps técnicos se almacenan como `timestamptz`. Esta separación mantiene estable el calendario histórico ante cambios de zona horaria.
 

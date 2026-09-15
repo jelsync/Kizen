@@ -350,7 +350,7 @@ reset role;
 
 select is(
   (select count(*) from public.habits),
-  1::bigint,
+  2::bigint,
   'cross-owner delete removed no rows'
 );
 

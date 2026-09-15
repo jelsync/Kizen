@@ -85,3 +85,10 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Decisión: crear, reemplazar, pausar, archivar o reactivar se aplica en la fecha local actual. Si hoy ya tiene progreso, el cambio se ejecuta al comenzar el siguiente día; no se almacenan cambios de estado futuros en el MVP.
 - Motivo: evita que `habits.status` diga una cosa mientras la vigencia de la programación todavía dice otra.
 - Consecuencias: una versión creada hoy sin logs puede sustituirse o retirarse de forma atómica porque aún no tiene historia. Una versión con historia se cierra y nunca se reescribe.
+
+## DEC-013 — Sesión y recuperación administradas por Supabase Auth
+
+- Fecha: 2026-09-15
+- Decisión: usar las APIs cliente de Supabase Auth y `onAuthStateChange` para sesión, confirmación y recuperación; no crear un almacén propio de tokens ni un backend de autenticación.
+- Motivo: Supabase ya resuelve persistencia, renovación y callbacks para el MVP, mientras RLS aplica la autorización en PostgreSQL.
+- Consecuencias: las URL de desarrollo y producción deben estar permitidas en Supabase Auth. `PASSWORD_RECOVERY` abre un formulario específico y actualiza la contraseña mediante la sesión temporal del usuario.
