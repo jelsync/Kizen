@@ -4,34 +4,34 @@
 
 La aplicación React + Vite existe y su build local está verificado. El proyecto Supabase independiente de Kizen está enlazado y tiene aplicada la migración inicial. Aún no hay Worker ni despliegue Cloudflare configurado. El flujo previsto es desarrollo local → Git → GitHub → Cloudflare → Kizen.
 
-## Cloudflare Pages con despliegue por push
+## Cloudflare Workers con despliegue por push
 
-Para este frontend estático, Cloudflare Pages es la opción recomendada. No requiere un Worker ni un token de GitHub:
+Kizen debe configurarse como **Cloudflare Workers Builds**, igual que Gasti. El archivo `wrangler.jsonc` publica `dist/` como assets estáticos y activa el fallback de SPA:
 
-1. En Cloudflare, abrir **Workers & Pages → Create application → Pages → Connect to Git**.
-2. Autorizar GitHub y seleccionar `jelsync/Kizen`.
-3. Elegir la rama `main` para producción.
+1. En Cloudflare abrir **Workers & Pages → Create application → Workers → Import from Git** (o conectar el repositorio desde el Worker existente).
+2. Seleccionar GitHub y el repositorio `jelsync/Kizen`.
+3. Elegir la rama `main`.
 4. Configurar:
-   - Framework preset: `Vite`
    - Build command: `npm run build`
-   - Build output directory: `dist`
+   - Deploy command: `npm run deploy`
    - Root directory: `/`
    - Node version: `22`
-5. En **Settings → Environment variables → Production** agregar:
+5. En las variables de producción agregar:
    - `VITE_SUPABASE_URL=https://mahsnwodlzyygkoxrrov.supabase.co`
    - `VITE_SUPABASE_ANON_KEY=<la clave pública del proyecto>`
 6. Guardar y ejecutar el primer despliegue.
 
-Después, cada `push` a `main` iniciará automáticamente un nuevo build y despliegue. Los pull requests pueden configurarse como Preview Deployments.
+Después, cada `push` a `main` ejecutará `npm run build` y `npx wrangler deploy`. Los pull requests pueden configurarse como previews si el plan y la configuración lo permiten.
 
-Cuando Cloudflare asigne la URL pública, registrar esa URL en Supabase en **Authentication → URL Configuration** como `Site URL` y agregar también `https://<proyecto>.pages.dev/**` en `Redirect URLs`. No subir `.env.local` ni claves privadas al repositorio.
+Cuando Cloudflare asigne la URL pública, registrar esa URL en Supabase en **Authentication → URL Configuration** como `Site URL` y agregar también `https://<dominio>/**` en `Redirect URLs`. No subir `.env.local` ni claves privadas al repositorio.
 
 ## Configuración prevista
 
 - Repositorio: `jelsync/Kizen`.
-- Proyecto Pages: `kizen` si el nombre está disponible.
-- URL prevista: `https://kizen.pages.dev/` o el subdominio asignado por Cloudflare.
+- Worker: `kizen` si el nombre está disponible.
+- URL prevista: `https://kizen.<tu-subdominio>.workers.dev/` o el dominio personalizado.
 - Build command: `npm.cmd run build` en PowerShell local; Cloudflare ejecutará `npm run build`.
+- Deploy command: `npm.cmd run deploy` en PowerShell local; Cloudflare ejecutará `npm run deploy`.
 - Output: `dist`.
 
 ## Variables de frontend
