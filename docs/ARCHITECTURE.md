@@ -61,6 +61,11 @@ Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestam
   actualización del total usan la RPC `set_daily_log`, que conserva la semántica
   idempotente y la validación de fecha/programación en PostgreSQL. La tarjeta muestra
   el estado de hoy y hasta siete registros históricos con la meta de su programación.
+- Las métricas se calculan en el frontend a partir de todas las versiones de
+  programación y sus `habit_logs`: las rachas recorren ocurrencias esperadas,
+  las pausas no agregan días y el día actual pendiente no rompe la racha. La tarjeta
+  muestra racha actual, mejor racha, constancia y progreso del periodo móvil de
+  30 días, junto con el total histórico. No se almacenan contadores derivados.
 - `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
 - `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
 - `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.

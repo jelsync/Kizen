@@ -24,6 +24,11 @@
 - Fase 6 implementada: registro diario idempotente desde la interfaz, estado de hoy y
   historial reciente por hábito. La UI usa la zona horaria del perfil y la RPC
   `set_daily_log`; no fue necesaria una migración adicional.
+- Fase 7 implementada: métricas derivadas de programaciones versionadas y logs,
+  incluyendo racha actual, mejor racha, constancia, progreso del periodo móvil de
+  30 días y totales históricos. Las pausas, el día actual pendiente y los cambios
+  de meta respetan la semántica de fechas y versiones; no se guardan contadores
+  derivados.
 
 ## En progreso
 
@@ -32,7 +37,7 @@
 
 ## Pendiente
 
-- Tras validar las Fases 5 y 6, implementar métricas y calendario.
+- Tras validar las Fases 5 y 6, implementar el calendario.
 - Configurar despliegue Cloudflare y CI/CD desde GitHub.
 
 ## Riesgos y restricciones actuales

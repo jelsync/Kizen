@@ -18,6 +18,7 @@ src/main.tsx
       ├─ src/features/habits/HabitsPage.tsx
       │   ├─ src/features/habits/HabitForm.tsx
       │   ├─ src/features/habits/HabitCard.tsx
+      │   │   └─ src/features/habits/habit-metrics.ts
       │   ├─ src/features/habits/habits-repository.ts
       │   ├─ src/features/habits/habit-mappers.ts
       │   ├─ src/features/habits/habit-validation.ts
@@ -41,7 +42,7 @@ Supabase local
 | --- | --- |
 | Bootstrap y UI base | `src/main.tsx`, `src/App.tsx`, `src/App.css`, `src/index.css` |
 | Registro, sesión y recuperación | `src/features/auth/AuthPanel.tsx`, `src/features/auth/use-auth-session.ts`, `src/features/auth/auth-session-state.ts`, `src/features/auth/auth-redirects.ts`, `src/features/auth/auth-validation.ts` |
-| CRUD y programación de hábitos | `src/features/habits/HabitsPage.tsx`, `src/features/habits/habits-repository.ts`, `src/features/habits/habit-types.ts`, `src/features/habits/habit-mappers.ts` |
+| CRUD, métricas y programación de hábitos | `src/features/habits/HabitsPage.tsx`, `src/features/habits/habits-repository.ts`, `src/features/habits/habit-types.ts`, `src/features/habits/habit-mappers.ts`, `src/features/habits/habit-metrics.ts` |
 | Formulario y validación de hábitos | `src/features/habits/HabitForm.tsx`, `src/features/habits/habit-validation.ts`, `src/features/habits/habit-dates.ts` |
 | Variables públicas y Supabase | `.env.example`, `src/lib/supabase-config.ts`, `src/lib/supabase.ts` |
 | Validación de configuración | `src/lib/supabase-config.test.ts` |

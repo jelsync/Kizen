@@ -172,6 +172,11 @@ Cualquier vista expuesta usará comportamiento `security_invoker` o una alternat
 - Para constancia, hoy entra como día transcurrido. El dashboard mostrará por separado el progreso de hoy.
 - Una racha recorre ocurrencias programadas consecutivas, no días calendario. Días no programados no la rompen. Hoy pendiente no rompe la racha hasta que finaliza el día local.
 - Mejor racha y total completado se derivan; no se almacenan contadores.
+- La interfaz calcula un resumen móvil de 30 días (días esperados,
+  completados, registrados, incumplidos, constancia y progreso parcial) y un
+  resumen histórico con las mismas ocurrencias. El progreso parcial se pondera
+  por `amount / target_amount`, limitado a 100 % por ocurrencia, para no sumar
+  unidades incompatibles entre versiones.
 - Para `measurement_type = duration`, la cantidad se almacena siempre en minutos y `unit = 'minute'`; la UI puede mostrar horas. `count` y `custom` se agregan solo dentro del mismo hábito/unidad exacta. Unidades incompatibles nunca se suman entre hábitos.
 
 Los días incumplidos son implícitos: se generan fechas esperadas y se cruzan con logs. No se crean filas vacías por cada ausencia.

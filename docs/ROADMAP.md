@@ -30,9 +30,12 @@ Registro de cantidad, completado y historial. La interfaz registra el total diar
 mediante `set_daily_log`, respeta la fecha local del perfil y muestra el estado y
 los últimos registros de cada hábito.
 
-## Fase 7 — Métricas
+## Fase 7 — Métricas ✅
 
-Rachas, constancia y estadísticas.
+Rachas, constancia y estadísticas derivadas de las programaciones versionadas y
+`habit_logs`, sin contadores persistidos. La interfaz muestra racha actual y
+mejor racha, constancia y progreso de los últimos 30 días, además de totales
+históricos.
 
 ## Fase 8 — Calendario
 

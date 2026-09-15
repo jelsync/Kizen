@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useId, useRef, useState } from 'react'
 import { ISO_WEEKDAYS, type Habit } from './habit-types'
 import { formatCivilDate } from './habit-dates'
+import { getHabitMetrics } from './habit-metrics'
 import { getHabitDayProgress } from './habit-progress'
 
 type HabitCardProps = Readonly<{
@@ -41,6 +42,14 @@ function weekdaySummary(habit: Habit): string {
     .join(' · ')
 }
 
+function dayCountLabel(count: number): string {
+  return `${count} ${count === 1 ? 'día' : 'días'}`
+}
+
+function percentageLabel(rate: number | null): string {
+  return rate === null ? 'Sin datos' : `${Math.round(rate * 100)}%`
+}
+
 export function HabitCard({
   habit,
   isBusy,
@@ -58,6 +67,7 @@ export function HabitCard({
   const cancelConfirmationRef = useRef<HTMLButtonElement>(null)
   const schedule = habit.currentSchedule ?? habit.latestSchedule
   const todayProgress = getHabitDayProgress(habit, localToday)
+  const metrics = getHabitMetrics(habit, localToday)
   const [amount, setAmount] = useState(todayProgress.log ? String(todayProgress.amount) : '')
 
   useEffect(() => {
@@ -138,6 +148,38 @@ export function HabitCard({
           )}
         </div>
       )}
+
+      <section className="habit-metrics" aria-labelledby={`metrics-${habit.id}`}>
+        <div className="habit-metrics-heading">
+          <strong id={`metrics-${habit.id}`}>Métricas</strong>
+          <span>Últimos 30 días</span>
+        </div>
+        <dl className="metrics-grid">
+          <div>
+            <dt>Racha actual</dt>
+            <dd>{dayCountLabel(metrics.currentStreak)}</dd>
+          </div>
+          <div>
+            <dt>Mejor racha</dt>
+            <dd>{dayCountLabel(metrics.bestStreak)}</dd>
+          </div>
+          <div>
+            <dt>Constancia</dt>
+            <dd>{percentageLabel(metrics.period.completionRate)}</dd>
+          </div>
+          <div>
+            <dt>Progreso</dt>
+            <dd>{percentageLabel(metrics.period.progressRate)}</dd>
+          </div>
+        </dl>
+        <p className="metrics-summary">
+          {metrics.period.expectedDays === 0
+            ? 'Todavía no hay días programados para medir.'
+            : `${metrics.period.completedDays} de ${metrics.period.expectedDays} días cumplidos (${metrics.period.loggedDays} registrados).`}
+          {' '}
+          Históricamente: {metrics.totals.completedDays} de {metrics.totals.expectedDays}.
+        </p>
+      </section>
 
       <div className="habit-history">
         <strong>Historial reciente</strong>
