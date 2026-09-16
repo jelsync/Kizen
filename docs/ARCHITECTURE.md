@@ -28,7 +28,7 @@ El frontend consume Supabase para el MVP. No se prevé un backend Node/NestJS ni
 - La identidad la gestiona Supabase Auth; cada recurso de usuario se relaciona con `auth.users` a través de `profiles`.
 - RLS protege el acceso por propietario en PostgreSQL.
 - Cloudflare solo aloja la SPA inicialmente; no debe contener secretos administrativos del cliente.
-- Los recordatorios web empiezan con una preferencia persistida y notificación del navegador mientras la pestaña está abierta. Push, email, service worker y ejecución offline quedan para una fase posterior.
+- La PWA usa un service worker generado durante el build para precachear la interfaz, el manifest y sus iconos. No agrega runtime caching de Supabase, Push, email ni sincronización offline de datos.
 
 ## Dependencias principales previstas
 
@@ -84,3 +84,11 @@ claves privadas en el navegador.
 La preferencia se guarda mediante la RPC atómica `set_browser_reminder` para
 evitar carreras entre pestañas; la evaluación admite hasta dos minutos de
 tolerancia cuando el temporizador del navegador se reanuda tarde.
+
+### PWA
+
+`vite-plugin-pwa` genera `manifest.webmanifest`, `registerSW.js` y el service
+worker de producción. El manifest define Kizen como aplicación independiente y
+usa un icono SVG propio. El service worker precachea solo artefactos generados
+por Vite y ofrece el fallback de navegación de la SPA; las peticiones a Supabase
+no se cachean ni se hacen disponibles sin conexión.

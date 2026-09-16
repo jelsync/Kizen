@@ -120,3 +120,10 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Decisión: persistir preferencias de recordatorio por hábito y canal, iniciar con `browser` y evaluar la hora desde la pestaña abierta usando la zona IANA del perfil. Las escrituras usan la RPC atómica `set_browser_reminder`.
 - Motivo: entrega valor al MVP sin introducir colas, cron, service workers, web push, email ni secretos administrativos antes de validar el uso real.
 - Consecuencias: el usuario debe conceder permiso y mantener Kizen abierto para recibir el aviso; se admite una tolerancia de hasta dos minutos para compensar la suspensión del temporizador y se deduplica por fecha. La tabla y el campo `channel` permiten añadir Push/Email después; PWA y entrega offline requieren una decisión y pruebas específicas.
+
+## DEC-018 — PWA estática antes de offline de datos
+
+- Fecha: 2026-09-15
+- Decisión: generar una PWA con `vite-plugin-pwa`, manifest, icono y service worker de Workbox que precachea la interfaz compilada y actualiza automáticamente sus assets.
+- Motivo: permite instalar Kizen y cargar su shell de interfaz con una integración pequeña compatible con Vite y Cloudflare Workers, sin introducir una base local, cola de sincronización o manejo de conflictos.
+- Consecuencias: la interfaz puede abrirse sin conexión después de una visita, pero Auth, hábitos, logs y recordatorios que dependan de Supabase requieren red. Las respuestas de Supabase no entran al caché. Push y entrega con la aplicación cerrada siguen fuera de alcance.

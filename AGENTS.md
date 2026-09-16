@@ -33,7 +33,7 @@ Kizen es independiente de Gasti: nunca modificar, reutilizar tablas, credenciale
 - La autorización se implementa con Supabase Row Level Security, no con filtros del frontend.
 - El frontend puede usar únicamente `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (o equivalentes públicos). Nunca exponer service-role keys, contraseñas, tokens privados ni archivos `.env` reales.
 - No hacer commits ni pushes salvo solicitud explícita del usuario.
-- Los recordatorios web actuales son deliberadamente simples: preferencia persistida y Notification API con la pestaña abierta. No agregar PWA, Push, email, IA, gamificación ni workers programados sin una decisión documentada.
+- La PWA actual solo precachea la interfaz compilada para instalación y carga básica. No cachear respuestas de Supabase ni agregar Push, email, sincronización offline de datos, IA o gamificación sin una decisión documentada.
 
 ## Roles sugeridos
 

@@ -37,6 +37,9 @@
   `browser`, RLS, anticipación configurable y notificaciones del navegador
   evaluadas en la zona horaria del perfil. Las migraciones `202609150005` y
   `202609150006` fueron aplicadas al Supabase remoto de Kizen.
+- Fase 10 implementada: manifest, icono, instalación y service worker generado
+  durante el build para precachear los assets de la interfaz, sin cachear datos
+  privados de Supabase.
 
 ## En progreso
 
@@ -44,6 +47,8 @@
 - Fase 6: pendiente validar el flujo completo de registro y actualización de progreso con una sesión real.
 - Fase 9: pendiente validar con una sesión real el permiso del navegador y la
   entrega puntual de un recordatorio.
+- Fase 10: pendiente validar instalación y recarga offline desde el despliegue
+  HTTPS de Cloudflare en un dispositivo real.
 
 ## Pendiente
 

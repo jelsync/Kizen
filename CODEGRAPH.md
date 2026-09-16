@@ -25,6 +25,10 @@ src/main.tsx
       │   └─ src/features/habits/habit-dates.ts
       └─ src/App.css + src/index.css
 
+PWA de compilación
+  └─ vite.config.ts (VitePWA)
+      └─ public/kizen-icon.svg
+
 Recordatorios web
   └─ src/features/reminders/HabitReminderSettings.tsx
       ├─ src/features/reminders/reminders-repository.ts
@@ -53,6 +57,7 @@ Supabase local
 | CRUD, métricas y programación de hábitos | `src/features/habits/HabitsPage.tsx`, `src/features/habits/habits-repository.ts`, `src/features/habits/habit-types.ts`, `src/features/habits/habit-mappers.ts`, `src/features/habits/habit-metrics.ts` |
 | Formulario y validación de hábitos | `src/features/habits/HabitForm.tsx`, `src/features/habits/habit-validation.ts`, `src/features/habits/habit-dates.ts` |
 | Variables públicas y Supabase | `.env.example`, `src/lib/supabase-config.ts`, `src/lib/supabase.ts` |
+| PWA, manifest y caché estática | `vite.config.ts`, `public/kizen-icon.svg`, `docs/DEPLOYMENT.md` |
 | Validación de configuración | `src/lib/supabase-config.test.ts` |
 | PostgreSQL, Auth, RLS y RPC | `supabase/migrations/`, `supabase/tests/`, `docs/DATA_MODEL.md` |
 | Arquitectura, datos y seguridad | `AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`, `docs/DECISIONS.md` |

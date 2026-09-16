@@ -23,6 +23,58 @@
   color: var(--ink);
 }
 
+.connection-notice,
+.pwa-update-prompt {
+  position: fixed;
+  z-index: 10;
+  right: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  max-width: 35rem;
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  background: var(--surface);
+  box-shadow: 0 0.7rem 2rem rgba(30, 42, 36, 0.16);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.connection-notice {
+  top: 1rem;
+  border-color: #e5c77c;
+  background: #fff8e9;
+}
+
+.pwa-update-prompt {
+  bottom: 1rem;
+}
+
+.pwa-update-prompt button {
+  flex: none;
+  min-height: 2.25rem;
+  border: 0;
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.7rem;
+  background: var(--accent-strong);
+  color: white;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.pwa-update-prompt button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -202,5 +254,11 @@
 
   .account-actions > span {
     display: block;
+  }
+
+  .connection-notice,
+  .pwa-update-prompt {
+    right: 2rem;
+    left: auto;
   }
 }

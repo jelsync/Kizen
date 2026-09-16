@@ -51,9 +51,11 @@ Notification API se evalúa cada 30 segundos en la zona horaria del perfil y se
 deduplica por día. Push, email, service worker y funcionamiento con la pestaña
 cerrada se reservan para PWA o una fase posterior.
 
-## Fase 10 — PWA
+## Fase 10 — PWA ✅
 
-Evaluar instalabilidad y notificaciones una vez estable el núcleo web.
+Manifest, icono, instalación y service worker de producción para precachear la
+interfaz. La PWA no persiste ni sincroniza datos de Supabase sin conexión y no
+incluye todavía Push notifications.
 
 ## Fase 11 — IA y gamificación
 

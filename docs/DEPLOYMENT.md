@@ -45,6 +45,14 @@ VITE_SUPABASE_ANON_KEY=
 
 No definir ni exponer `SUPABASE_SERVICE_ROLE_KEY` en el frontend ni en el build público.
 
+## PWA
+
+El build genera `manifest.webmanifest`, `registerSW.js`, `sw.js` y los assets de
+Workbox en `dist/`; `wrangler.jsonc` ya publica todo `dist/`, por lo que no se
+requieren variables ni infraestructura adicional en Cloudflare. La PWA requiere
+HTTPS en producción, que Cloudflare Workers proporciona. Verificar después de
+cada despliegue que el navegador detecte el manifest y permita instalar Kizen.
+
 ## Supabase local y migraciones
 
 La configuración versionada está en `supabase/config.toml`; exige grants explícitos mediante `auto_expose_new_tables = false`. Las migraciones viven en `supabase/migrations/` y las pruebas SQL en `supabase/tests/`.

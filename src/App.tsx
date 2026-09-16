@@ -4,6 +4,8 @@ import { AuthPanel } from './features/auth/AuthPanel'
 import { useAuthSession } from './features/auth/use-auth-session'
 import { HabitsPage } from './features/habits/HabitsPage'
 import { getSupabaseClient } from './lib/supabase'
+import { OfflineNotice } from './components/OfflineNotice'
+import { PwaUpdatePrompt } from './components/PwaUpdatePrompt'
 
 function App() {
   const [sessionMessage, setSessionMessage] = useState<string>()
@@ -38,6 +40,8 @@ function App() {
 
   return (
     <main className={`app-shell${showWorkspace ? ' workspace-shell' : ''}`}>
+      <OfflineNotice />
+      <PwaUpdatePrompt />
       <header className={`brand${showWorkspace ? ' workspace-brand' : ''}`}>
         <div className="brand-identity">
           <span aria-hidden="true" className="brand-mark">K</span>
