@@ -239,6 +239,81 @@
   font-weight: 700;
 }
 
+.habit-reminder {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.habit-reminder-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.habit-reminder-heading > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.habit-reminder strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.habit-reminder-heading span,
+.reminder-note,
+.reminder-error,
+.habit-reminder.muted > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.reminder-toggle {
+  flex: 0 0 auto;
+  min-height: 2.2rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.72rem;
+}
+
+.reminder-toggle.enabled {
+  background: var(--accent-soft);
+}
+
+.reminder-offset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.reminder-offset select {
+  min-height: 2.35rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  padding: 0.35rem 0.55rem;
+  background: #fffefa;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.74rem;
+}
+
+.reminder-offset select:focus {
+  border-color: var(--accent);
+  outline: 0.2rem solid color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.reminder-error {
+  color: #923625;
+}
+
 .daily-progress,
 .habit-history {
   margin-top: 1rem;

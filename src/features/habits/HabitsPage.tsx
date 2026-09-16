@@ -11,6 +11,8 @@ import {
   updateHabit,
   type HabitWorkspace,
 } from './habits-repository'
+import { saveBrowserReminder } from '../reminders/reminders-repository'
+import { useBrowserReminders } from '../reminders/use-browser-reminders'
 import {
   EMPTY_HABIT_FORM,
   type Habit,
@@ -47,6 +49,7 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
   const [successMessage, setSuccessMessage] = useState<string>()
   const [busyHabitId, setBusyHabitId] = useState<string>()
   const [busyLogHabitId, setBusyLogHabitId] = useState<string>()
+  const [busyReminderHabitId, setBusyReminderHabitId] = useState<string>()
   const [currentTime, setCurrentTime] = useState(() => new Date())
 
   const refresh = useCallback(async (showLoading = false) => {
@@ -91,6 +94,11 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
   const localToday = workspace
     ? formatDateInTimeZone(currentTime, workspace.timeZone)
     : undefined
+
+  useBrowserReminders({
+    habits: workspace?.habits ?? [],
+    timeZone: workspace?.timeZone ?? 'UTC',
+  })
 
   const visibleHabits = useMemo(
     () => workspace?.habits.filter((habit) => habit.status === filter) ?? [],
@@ -178,6 +186,30 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
     }
   }
 
+  async function handleSaveReminder(habit: Habit, minutesBefore: number, isEnabled: boolean) {
+    if (!workspace) return
+    resetFeedback()
+    setBusyReminderHabitId(habit.id)
+    try {
+      const reminder = await saveBrowserReminder({
+        habitId: habit.id,
+        userId,
+        minutesBefore,
+        isEnabled,
+      })
+      setWorkspace((current) => current
+        ? { ...current, habits: current.habits.map((entry) => entry.id === habit.id
+          ? { ...entry, reminder }
+          : entry) }
+        : current)
+      setSuccessMessage(isEnabled ? 'Recordatorio activado.' : 'Recordatorio pausado.')
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'No pudimos guardar el recordatorio.')
+    } finally {
+      setBusyReminderHabitId(undefined)
+    }
+  }
+
   if (editor) {
     return (
       <HabitForm
@@ -262,11 +294,12 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
       {!isLoading && !loadError && visibleHabits.length > 0 && (
         <ul className="habit-list">
           {visibleHabits.map((habit) => (
-            <HabitCard
+              <HabitCard
               habit={habit}
               isBusy={busyHabitId === habit.id}
-              isLogBusy={busyLogHabitId === habit.id}
-              key={`${habit.id}-${localToday}-${habit.logs.find((log) => log.logDate === localToday)?.amount ?? 'empty'}`}
+                isLogBusy={busyLogHabitId === habit.id}
+                isReminderBusy={busyReminderHabitId === habit.id}
+              key={`${habit.id}-${localToday}-${habit.logs.find((log) => log.logDate === localToday)?.amount ?? 'empty'}-${habit.reminder?.updatedAt ?? 'no-reminder'}`}
               localToday={localToday ?? ''}
               onArchive={(selected) => changeStatus(selected, 'archived')}
               onDelete={handleDelete}
@@ -276,6 +309,7 @@ export function HabitsPage({ userId, sessionMessage, signOutError }: HabitsPageP
               }}
               onPause={(selected) => changeStatus(selected, 'paused')}
               onSaveDailyLog={handleSaveDailyLog}
+              onSaveReminder={handleSaveReminder}
               onReactivate={(selected) => {
                 resetFeedback()
                 setEditor({ mode: 'reactivate', habit: selected })

@@ -2,14 +2,14 @@
 
 ## Estado
 
-La base frontend existe: React + Vite + TypeScript y un cliente Supabase centralizado. El esquema PostgreSQL, Auth, RLS y RPC están aplicados en el proyecto Supabase independiente. Autenticación está validada y el módulo de gestión de hábitos está implementado; el despliegue aún no está configurado.
+La base frontend existe: React + Vite + TypeScript y un cliente Supabase centralizado. El esquema PostgreSQL, Auth, RLS y RPC están aplicados en el proyecto Supabase independiente. Autenticación, hábitos, registro diario, métricas, calendario y la primera versión de recordatorios están implementados. El despliegue de Cloudflare fue realizado por el propietario; los detalles operativos se mantienen en `DEPLOYMENT.md`.
 
 ## Componentes
 
 ```text
 GitHub
   ↓ despliegue desde la rama configurada
-Cloudflare Workers (worker: kizen, previsto)
+Cloudflare Workers (worker: kizen, desplegado)
   ↓ sirve la SPA
 React + Vite + TypeScript
   ↓ cliente público de Supabase con sesión del usuario
@@ -28,7 +28,7 @@ El frontend consume Supabase para el MVP. No se prevé un backend Node/NestJS ni
 - La identidad la gestiona Supabase Auth; cada recurso de usuario se relaciona con `auth.users` a través de `profiles`.
 - RLS protege el acceso por propietario en PostgreSQL.
 - Cloudflare solo aloja la SPA inicialmente; no debe contener secretos administrativos del cliente.
-- Recordatorios, PWA, IA y gamificación quedan fuera del núcleo inicial, pero el modelo debe permitir extensiones sin acoplamiento prematuro.
+- Los recordatorios web empiezan con una preferencia persistida y notificación del navegador mientras la pestaña está abierta. Push, email, service worker y ejecución offline quedan para una fase posterior.
 
 ## Dependencias principales previstas
 
@@ -73,3 +73,14 @@ Las fechas de negocio son días civiles en la zona IANA del perfil. Los timestam
 - `src/lib/supabase-config.ts` valida las dos variables públicas necesarias.
 - `src/lib/supabase.ts` crea el cliente solo al solicitarlo, de modo que la pantalla base no falla antes de configurar Supabase.
 - `.env.example` solo declara `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`; `.env*` está ignorado excepto el ejemplo.
+
+### Recordatorios web
+
+`src/features/reminders/` carga y guarda la preferencia de canal `browser` con
+RLS, y evalúa cada 30 segundos la hora de la programación en la zona IANA del
+perfil. La Notification API solo se usa con permiso explícito y se deduplica
+por recordatorio y fecha mediante `localStorage`; no hay worker programado ni
+claves privadas en el navegador.
+La preferencia se guarda mediante la RPC atómica `set_browser_reminder` para
+evitar carreras entre pestañas; la evaluación admite hasta dos minutos de
+tolerancia cuando el temporizador del navegador se reanuda tarde.

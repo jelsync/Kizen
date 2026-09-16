@@ -80,6 +80,7 @@ export function mapHabitRow(row: HabitQueryRow): Habit {
     latestSchedule: schedules[0] ?? null,
     schedules,
     logs,
+    reminder: null,
   }
 }
 

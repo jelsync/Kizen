@@ -25,6 +25,12 @@ src/main.tsx
       │   └─ src/features/habits/habit-dates.ts
       └─ src/App.css + src/index.css
 
+Recordatorios web
+  └─ src/features/reminders/HabitReminderSettings.tsx
+      ├─ src/features/reminders/reminders-repository.ts
+      ├─ src/features/reminders/browser-reminders.ts
+      └─ src/features/reminders/use-browser-reminders.ts
+
 Integración con Supabase
   └─ src/lib/supabase.ts
       └─ src/lib/supabase-config.ts
@@ -33,6 +39,8 @@ Supabase local
   ├─ supabase/config.toml
   ├─ supabase/migrations/202609150001_initial_kizen_schema.sql
   ├─ supabase/migrations/202609150002_habit_mutation_guards.sql
+  ├─ supabase/migrations/202609150005_reminders.sql
+  ├─ supabase/migrations/202609150006_atomic_browser_reminder.sql
   └─ supabase/tests/*.test.sql
 ```
 

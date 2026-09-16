@@ -38,6 +38,7 @@ const habit: Habit = {
     amount: 20,
     note: null,
   }],
+  reminder: null,
 }
 
 describe('habit progress', () => {

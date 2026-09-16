@@ -33,20 +33,26 @@
   accesible y estados derivados de las versiones de programación y `habit_logs`
   (completado, incumplido, programado, no programado y hoy). La cuadrícula usa
   fechas civiles y no depende de la zona horaria del navegador.
+- Fase 9 implementada: preferencias de recordatorio por hábito con canal
+  `browser`, RLS, anticipación configurable y notificaciones del navegador
+  evaluadas en la zona horaria del perfil. Las migraciones `202609150005` y
+  `202609150006` fueron aplicadas al Supabase remoto de Kizen.
 
 ## En progreso
 
 - Fase 5: pendiente validar el flujo completo desde la interfaz con una sesión real contra Supabase remoto.
 - Fase 6: pendiente validar el flujo completo de registro y actualización de progreso con una sesión real.
+- Fase 9: pendiente validar con una sesión real el permiso del navegador y la
+  entrega puntual de un recordatorio.
 
 ## Pendiente
 
-- Validar desde la interfaz el flujo completo de las Fases 5, 6, 7 y 8 con
+- Validar desde la interfaz el flujo completo de las Fases 5, 6, 7, 8 y 9 con
   una sesión real contra Supabase remoto.
-- Configurar despliegue Cloudflare y CI/CD desde GitHub.
+- Mantener documentado el despliegue Cloudflare y CI/CD que ya fue realizado.
 
 ## Riesgos y restricciones actuales
 
 - Los callbacks locales de Auth están configurados y validados. Al desplegar habrá que agregar la URL definitiva de Cloudflare antes de probarlos en producción.
 - CodeGraph se ejecuta localmente como `codegraph.cmd`; la integración MCP de Codex se aplicará al recargar la sesión.
-- No hay secretos versionados. El proyecto Supabase remoto existe, pero el Worker de Cloudflare aún no está configurado.
+- No hay secretos versionados. El proyecto Supabase remoto existe y el usuario ya desplegó la aplicación en Cloudflare; falta consolidar la URL exacta si cambia.

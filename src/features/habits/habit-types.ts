@@ -20,6 +20,18 @@ export type HabitLog = Readonly<{
   note: string | null
 }>
 
+export type ReminderChannel = 'browser' | 'push' | 'email'
+
+export type HabitReminder = Readonly<{
+  id: string
+  habitId: string
+  channel: ReminderChannel
+  minutesBefore: number
+  isEnabled: boolean
+  createdAt: string
+  updatedAt: string
+}>
+
 export type Habit = Readonly<{
   id: string
   name: string
@@ -32,6 +44,7 @@ export type Habit = Readonly<{
   latestSchedule: HabitSchedule | null
   schedules: HabitSchedule[]
   logs: HabitLog[]
+  reminder: HabitReminder | null
 }>
 
 export type HabitInput = Readonly<{

@@ -2,6 +2,7 @@ import { getSupabaseClient } from '../../lib/supabase'
 import { getBrowserTimeZone } from './habit-dates'
 import { mapHabitRow, type HabitQueryRow } from './habit-mappers'
 import type { Habit, HabitInput } from './habit-types'
+import { loadBrowserReminders } from '../reminders/reminders-repository'
 
 export type HabitWorkspace = Readonly<{ habits: Habit[]; timeZone: string }>
 
@@ -144,8 +145,12 @@ export async function loadHabitWorkspace(userId: string): Promise<HabitWorkspace
 
   if (error) throw new Error('No pudimos cargar tus hábitos.')
 
+  const habits = ((data ?? []) as unknown as HabitQueryRow[]).map(mapHabitRow)
+  const reminders = await loadBrowserReminders(habits.map((habit) => habit.id))
+  const remindersByHabit = new Map(reminders.map((reminder) => [reminder.habitId, reminder]))
+
   return {
-    habits: ((data ?? []) as unknown as HabitQueryRow[]).map(mapHabitRow),
+    habits: habits.map((habit) => ({ ...habit, reminder: remindersByHabit.get(habit.id) ?? null })),
     timeZone,
   }
 }

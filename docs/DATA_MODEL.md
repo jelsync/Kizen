@@ -2,7 +2,7 @@
 
 ## Estado y alcance
 
-Implementado mediante las migraciones versionadas en `supabase/migrations/`, aplicadas al proyecto Supabase remoto de Kizen y validadas con 91 pruebas pgTAP. Las pruebas incluyen el ciclo crear–pausar–reactivar–archivar–eliminar, atomicidad de edición y el rechazo de cambios de programación después de registrar progreso diario.
+Implementado mediante las migraciones versionadas en `supabase/migrations/`, aplicadas al proyecto Supabase remoto de Kizen y validadas con 116 pruebas pgTAP. Las pruebas incluyen el ciclo crear–pausar–reactivar–archivar–eliminar, atomicidad de edición, RLS de recordatorios y el rechazo de cambios de programación después de registrar progreso diario.
 
 El MVP usa recurrencia semanal. “Todos los días” son los siete días de la semana; no se implementan todavía intervalos, reglas mensuales ni RRULE. Los nombres físicos definitivos se conservarán en inglés y `snake_case`.
 
@@ -14,10 +14,11 @@ auth.users
       └─ habits
           ├─ habit_schedules
           │   └─ habit_schedule_days
-          └─ habit_logs
+          ├─ habit_logs
+          └─ reminders
 
-reminders (planificado para una fase posterior)
-  └─ habits
+reminders
+  └─ habits (FK compuesta habit_id, user_id)
 ```
 
 `habits` conserva la identidad y presentación del hábito. Meta, unidad, hora y días pertenecen a una versión de programación para que sus cambios no reescriban el historial.
@@ -124,9 +125,29 @@ El formulario envía el total absoluto del día. El `upsert` usa semántica de �
 
 En el MVP, “sesiones” significa días registrados con `amount > 0`. Si después se necesitan múltiples eventos dentro de un día se agregará `habit_log_entries`; no se incluye ahora.
 
-## `reminders` — diseño diferido
+## `reminders`
 
-No se creará en las migraciones iniciales. En la Fase 9 se validará una entidad con `id`, `habit_id`, `user_id`, `channel`, `minutes_before`, `is_enabled` y timestamps. La hora objetivo provendrá de la programación vigente y se interpretará en la zona IANA del perfil. No se implementan aún colas, push, email ni workers programados.
+Preferencias de entrega asociadas a un hábito. La migración
+`202609150005_reminders.sql` crea una fila por combinación de hábito y canal,
+con FK compuesta `(habit_id, user_id)` hacia `habits` para impedir asociaciones
+cruzadas. `channel` admite `browser`, `push` y `email` para futuras extensiones,
+pero la interfaz actual solo ofrece `browser`.
+
+| Campo | Tipo | Reglas |
+| --- | --- | --- |
+| `id` | `uuid` | PK. |
+| `habit_id` | `uuid` | FK compuesta al hábito propietario; cascada al borrar el hábito. |
+| `user_id` | `uuid` | Propietario explícito para RLS. |
+| `channel` | `text` | `browser`, `push` o `email`; único por hábito. |
+| `minutes_before` | `smallint` | Entre 0 y 1440 minutos. |
+| `is_enabled` | `boolean` | Permite pausar sin perder la preferencia. |
+| `created_at`, `updated_at` | `timestamptz` | Auditoría; `updated_at` usa trigger común. |
+
+La hora objetivo se obtiene de la programación vigente y se interpreta en la
+zona IANA de `profiles`. En Fase 9 el cliente comprueba la hora cada 30 segundos
+y muestra una notificación solo con permiso explícito y pestaña abierta. La RPC
+`set_browser_reminder` hace el alta o actualización en una sola transacción.
+No se implementan todavía colas, push, email, service workers ni workers programados.
 
 ## Índices iniciales
 
@@ -152,6 +173,7 @@ Se crean políticas separadas por cada operación concedida:
 | `habit_schedules` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
 | `habit_schedule_days` | Solo SELECT. | `user_id = (select auth.uid())` en `USING`; mutaciones sin grant ni policy directa. |
 | `habit_logs` | SELECT y DELETE. Crear o reemplazar el total diario usa RPC. | `user_id = (select auth.uid())` en `USING`. |
+| `reminders` | SELECT, INSERT, UPDATE de canal/anticipación/estado y DELETE. | `user_id = (select auth.uid())` en `USING` y `WITH CHECK`; la FK compuesta valida hábito y propietario. |
 
 Las FK compuestas complementan RLS: aunque un usuario falsifique `user_id`, no puede enlazar una fila hija a un hábito o programación ajenos. Una actualización tampoco puede reasignar recursos a otro usuario.
 

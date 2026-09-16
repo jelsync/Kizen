@@ -43,9 +43,13 @@ Visualización mensual de días completados, incumplidos, programados,
 no programados y hoy, derivada de las versiones de programación y
 `habit_logs` sin almacenar estados adicionales.
 
-## Fase 9 — Recordatorios
+## Fase 9 — Recordatorios ✅
 
-Preferencias y evaluación gradual de canales de notificación.
+Preferencias persistidas por hábito con RLS y canal `browser`. La interfaz permite
+activar, pausar y configurar 0, 5, 10, 15, 30 o 60 minutos de anticipación. La
+Notification API se evalúa cada 30 segundos en la zona horaria del perfil y se
+deduplica por día. Push, email, service worker y funcionamiento con la pestaña
+cerrada se reservan para PWA o una fase posterior.
 
 ## Fase 10 — PWA
 

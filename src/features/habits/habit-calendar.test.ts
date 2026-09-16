@@ -39,6 +39,7 @@ function makeHabit(): Habit {
       { id: 'old-log', scheduleId: 'old', logDate: '2026-09-09', amount: 10, note: null },
       { id: 'new-log', scheduleId: 'new', logDate: '2026-09-11', amount: 20, note: null },
     ],
+    reminder: null,
   }
 }
 

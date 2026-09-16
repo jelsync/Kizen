@@ -398,17 +398,18 @@ select is(
       'public.habits'::regclass,
       'public.habit_schedules'::regclass,
       'public.habit_schedule_days'::regclass,
-      'public.habit_logs'::regclass
+      'public.habit_logs'::regclass,
+      'public.reminders'::regclass
     )
       and relrowsecurity
   ),
-  5::bigint,
+  6::bigint,
   'RLS is enabled on every public Kizen table'
 );
 
 select is(
   (select count(*) from pg_catalog.pg_policies where schemaname = 'public'),
-  8::bigint,
+  12::bigint,
   'the expected operation-specific RLS policies exist'
 );
 

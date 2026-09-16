@@ -2,11 +2,11 @@
 
 ## Estado
 
-La aplicación React + Vite existe y su build local está verificado. El proyecto Supabase independiente de Kizen está enlazado y tiene aplicada la migración inicial. Aún no hay Worker ni despliegue Cloudflare configurado. El flujo previsto es desarrollo local → Git → GitHub → Cloudflare → Kizen.
+La aplicación React + Vite existe y su build local está verificado. El proyecto Supabase independiente de Kizen está enlazado y tiene aplicadas las migraciones versionadas, incluida `202609150005_reminders.sql`. El usuario ya realizó el despliegue en Cloudflare; este documento conserva el procedimiento reproducible y debe actualizarse con la URL definitiva si cambia.
 
 ## Cloudflare Workers con despliegue por push
 
-Kizen debe configurarse como **Cloudflare Workers Builds**, igual que Gasti. El archivo `wrangler.jsonc` publica `dist/` como assets estáticos y activa el fallback de SPA:
+Kizen utiliza **Cloudflare Workers Builds**, igual que Gasti. El archivo `wrangler.jsonc` publica `dist/` como assets estáticos y activa el fallback de SPA. El despliegue inicial ya fue realizado por el propietario; estos son los parámetros para reproducirlo o revisar su configuración:
 
 1. En Cloudflare abrir **Workers & Pages → Create application → Workers → Import from Git** (o conectar el repositorio desde el Worker existente).
 2. Seleccionar GitHub y el repositorio `jelsync/Kizen`.
@@ -72,7 +72,7 @@ El vínculo remoto y `supabase db push` solo se ejecutan después de verificar e
 Proyecto remoto de Kizen:
 
 - Project ref: `mahsnwodlzyygkoxrrov`.
-- Migraciones remotas aplicadas: `202609150001_initial_kizen_schema.sql`, `202609150002_habit_mutation_guards.sql`, `202609150003_fix_schedule_day_trigger.sql` y `202609150004_fix_schedule_trigger_old_reference.sql`.
+- Migraciones remotas aplicadas: `202609150001_initial_kizen_schema.sql`, `202609150002_habit_mutation_guards.sql`, `202609150003_fix_schedule_day_trigger.sql`, `202609150004_fix_schedule_trigger_old_reference.sql`, `202609150005_reminders.sql` y `202609150006_atomic_browser_reminder.sql`.
 - Antes de cada aplicación remota se ejecutan `supabase db reset`, `supabase test db` y `supabase db push --dry-run`.
 
 ## Redirecciones de Supabase Auth

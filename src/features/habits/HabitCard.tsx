@@ -4,11 +4,13 @@ import { ISO_WEEKDAYS, type Habit } from './habit-types'
 import { formatCivilDate } from './habit-dates'
 import { getHabitMetrics } from './habit-metrics'
 import { getHabitDayProgress } from './habit-progress'
+import { HabitReminderSettings } from '../reminders/HabitReminderSettings'
 
 type HabitCardProps = Readonly<{
   habit: Habit
   isBusy: boolean
   isLogBusy: boolean
+  isReminderBusy: boolean
   localToday: string
   onEdit: (habit: Habit) => void
   onSaveDailyLog: (habit: Habit, amount: number) => Promise<void>
@@ -16,6 +18,7 @@ type HabitCardProps = Readonly<{
   onReactivate: (habit: Habit) => void
   onArchive: (habit: Habit) => Promise<void>
   onDelete: (habit: Habit) => Promise<void>
+  onSaveReminder: (habit: Habit, minutesBefore: number, isEnabled: boolean) => Promise<void>
 }>
 
 const statusLabels = {
@@ -55,6 +58,7 @@ export function HabitCard({
   habit,
   isBusy,
   isLogBusy,
+  isReminderBusy,
   localToday,
   onEdit,
   onSaveDailyLog,
@@ -62,6 +66,7 @@ export function HabitCard({
   onReactivate,
   onArchive,
   onDelete,
+  onSaveReminder,
 }: HabitCardProps) {
   const [confirmation, setConfirmation] = useState<'archive' | 'delete'>()
   const confirmationTitleId = useId()
@@ -94,6 +99,14 @@ export function HabitCard({
         <span>{weekdaySummary(habit)}</span>
         <span>{schedule?.scheduledTime ? `A las ${schedule.scheduledTime}` : 'Sin hora fija'}</span>
       </div>
+
+      {habit.status !== 'archived' && (
+        <HabitReminderSettings
+          habit={habit}
+          isBusy={isReminderBusy}
+          onSave={onSaveReminder}
+        />
+      )}
 
       {habit.status === 'active' && (
         <div className="daily-progress">

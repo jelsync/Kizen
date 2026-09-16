@@ -19,6 +19,7 @@ function makeHabit(
     latestSchedule: schedules[0] ?? null,
     schedules,
     logs,
+    reminder: null,
   }
 }
 

@@ -113,3 +113,10 @@ Las decisiones no triviales se registran como `DEC-xxx`, con fecha, motivo y con
 - Decisión: editar detalles y, opcionalmente, reemplazar la programación se realiza mediante `update_habit_with_schedule`. Se revoca la actualización directa de columnas de `habits` al cliente.
 - Motivo: dos solicitudes independientes podían confirmar la programación y fallar después al guardar los detalles, dejando un éxito parcial presentado como error.
 - Consecuencias: la RPC bloquea y verifica el hábito, rechaza archivados, llama internamente al reemplazo endurecido cuando corresponde y actualiza los detalles dentro de la misma transacción. Cualquier error revierte el guardado completo.
+
+## DEC-017 — Recordatorios web sin infraestructura programada
+
+- Fecha: 2026-09-15
+- Decisión: persistir preferencias de recordatorio por hábito y canal, iniciar con `browser` y evaluar la hora desde la pestaña abierta usando la zona IANA del perfil. Las escrituras usan la RPC atómica `set_browser_reminder`.
+- Motivo: entrega valor al MVP sin introducir colas, cron, service workers, web push, email ni secretos administrativos antes de validar el uso real.
+- Consecuencias: el usuario debe conceder permiso y mantener Kizen abierto para recibir el aviso; se admite una tolerancia de hasta dos minutos para compensar la suspensión del temporizador y se deduplica por fecha. La tabla y el campo `channel` permiten añadir Push/Email después; PWA y entrega offline requieren una decisión y pruebas específicas.
